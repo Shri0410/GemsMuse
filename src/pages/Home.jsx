@@ -1,8 +1,49 @@
-import React from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import { MOCK_PRODUCTS } from "../constants";
+import koi from "../assets/koi.jpg";
+import colorarc from "../assets/colorarc.jpg";
+import ruby from "../assets/ruby.jpg";
+import sorbit from "../assets/sorbit.jpg";
 
 const Home = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const carouselItems = MOCK_PRODUCTS.slice(0, 8);
+  const totalItems = carouselItems.length;
+
+  // Calculate items to show based on window width
+  const [itemsToShow, setItemsToShow] = useState(4);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) setItemsToShow(1);
+      else if (window.innerWidth < 1024) setItemsToShow(2);
+      else setItemsToShow(4);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const maxIndex = totalItems - itemsToShow;
+
+  const nextSlide = useCallback(() => {
+    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+  }, [maxIndex]);
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
+  };
+
+  useEffect(() => {
+    if (!isPaused) {
+      const interval = setInterval(nextSlide, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [isPaused, nextSlide]);
+
   return (
     <div className="pt-0">
       {/* Hero Section */}
@@ -54,10 +95,10 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Our Collections Grid */}
-      <section className="py-24 md:py-32 bg-[#FAF8F5] dark:bg-background-dark">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-20">
+      {/* Our Collections Section - Carousel Implementation */}
+      <section className="py-24 md:py-32 bg-[#FAF8F5] dark:bg-background-dark overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 relative">
+          <div className="text-center mb-16">
             <span className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase block mb-4">
               Discover
             </span>
@@ -65,33 +106,93 @@ const Home = () => {
               Our Collections
             </h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            {MOCK_PRODUCTS.slice(0, 4).map((product) => (
-              <Link
-                to={`/product/${product.id}`}
-                key={product.id}
-                className="group cursor-pointer"
-              >
-                <div className="relative shimmer-container overflow-hidden bg-white dark:bg-surface-dark mb-6 aspect-square flex items-center justify-center p-5 transition-all duration-500 hover:shadow-2xl">
-                  {/* Shimmer Effect Div */}
-                  <div className="shimmer-effect"></div>
 
-                  <img
-                    alt={product.name}
-                    className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
-                    src={product.image}
-                  />
-                </div>
-                <h3 className="text-xl font-serif mb-2 text-text-main-light dark:text-text-main-dark tracking-wide">
-                  {product.name}
-                </h3>
-                <p className="text-text-muted-light dark:text-text-muted-dark text-[11px] font-light leading-relaxed tracking-wider uppercase mb-1">
-                  {product.description}
-                </p>
-              </Link>
+          <div
+            className="relative group"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
+            {/* Carousel Container */}
+            <div className="overflow-hidden">
+              <div
+                className="flex transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+                style={{
+                  transform: `translateX(-${
+                    currentIndex * (100 / itemsToShow)
+                  }%)`,
+                }}
+              >
+                {carouselItems.map((product) => (
+                  <div
+                    key={product.id}
+                    className="flex-shrink-0 px-4"
+                    style={{ width: `${100 / itemsToShow}%` }}
+                  >
+                    <Link
+                      to={`/product/${product.id}`}
+                      className="block group/item"
+                    >
+                      <div className="relative shimmer-container overflow-hidden bg-white dark:bg-surface-dark mb-6 aspect-square flex items-center justify-center px-5 py-0 transition-all duration-500 group-hover/item:shadow-2xl">
+                        <div className="shimmer-effect"></div>
+                        <img
+                          alt={product.name}
+                          className="w-full h-full object-contain transition-transform duration-700 group-hover/item:scale-110"
+                          src={product.image}
+                        />
+                      </div>
+                      <h3 className="text-lg font-serif mb-2 text-text-main-light dark:text-text-main-dark tracking-wide group-hover/item:text-primary transition-colors">
+                        {product.name}
+                      </h3>
+                      <p className="text-text-muted-light dark:text-text-muted-dark text-[10px] font-light leading-relaxed tracking-wider uppercase mb-1 line-clamp-1">
+                        {product.description}
+                      </p>
+                      <p className="text-primary text-xs font-bold tracking-widest mt-2">
+                        ${product.price.toLocaleString()}
+                      </p>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Navigation Arrows */}
+            <button
+              onClick={prevSlide}
+              className="absolute top-1/3 -left-4 md:-left-8 -translate-y-1/2 w-12 h-12 bg-white dark:bg-surface-dark shadow-xl border border-gray-100 dark:border-gray-800 flex items-center justify-center text-text-main-light dark:text-text-main-dark hover:text-primary transition-all z-20 group/btn"
+              aria-label="Previous slide"
+            >
+              <span className="material-icons-outlined text-2xl group-hover/btn:-translate-x-1 transition-transform">
+                chevron_left
+              </span>
+            </button>
+            <button
+              onClick={nextSlide}
+              className="absolute top-1/3 -right-4 md:-right-8 -translate-y-1/2 w-12 h-12 bg-white dark:bg-surface-dark shadow-xl border border-gray-100 dark:border-gray-800 flex items-center justify-center text-text-main-light dark:text-text-main-dark hover:text-primary transition-all z-20 group/btn"
+              aria-label="Next slide"
+            >
+              <span className="material-icons-outlined text-2xl group-hover/btn:translate-x-1 transition-transform">
+                chevron_right
+              </span>
+            </button>
+          </div>
+
+          {/* Pagination Indicators */}
+          <div className="flex justify-center gap-3 mt-12">
+            {Array.from({ length: maxIndex + 1 }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentIndex(i)}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  currentIndex === i
+                    ? "bg-primary w-6"
+                    : "bg-gray-300 dark:bg-gray-700"
+                }`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
             ))}
           </div>
-          <div className="text-center mt-20">
+
+          <div className="text-center mt-16">
             <Link
               to="/collection"
               className="inline-block bg-white hover:bg-primary hover:text-white text-text-main-light dark:text-text-main-dark border border-gray-200 dark:border-gray-800 px-12 py-4 text-[10px] uppercase tracking-[0.3em] font-bold transition-all duration-500 shadow-sm"
@@ -111,9 +212,9 @@ const Home = () => {
                 <img
                   alt="Featured Koi"
                   className="w-full h-auto object-cover shadow-lg"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCH3aikQWtnP0AR_tiSIxkV76ciR09Klao68D9dQkt-J6GTO1W7m-Q1QbZAe1g7xVWZJfdUQILLOH8sq5ExRGH_PKp59RcBAl-Lygoq9GLJB9q2Y0XuzWGT4kb2xP9E-vTZ1lcrz6LRDBzQ04BB7RpfD8yWBDSDe4ieUuxnbrcQcaXjwIvM18dXp9VXxvXh-rvvELvN2hpx86u0IcfbJoxUeAp4x7uv5viUg-xw3ncqG_75HzEUUI5uskR8ku4jvrdeMMmukfaeH7nv"
+                  src={koi}
                 />
-                <div className="absolute bottom-0 right-8 transform translate-x-4 translate-y-4 bg-primary text-white text-[9px] font-bold tracking-[0.3em] uppercase py-2.5 px-6">
+                <div className="absolute bottom-0 right-10 transform translate-x-4 translate-y-4 bg-primary text-white text-[9px] font-bold tracking-[0.3em] uppercase py-2.5 px-6">
                   Featured
                 </div>
               </div>
@@ -131,10 +232,11 @@ const Home = () => {
               </h2>
               <div className="space-y-6 text-text-muted-light dark:text-text-muted-dark font-light leading-relaxed text-sm tracking-wide">
                 <p>
-                  Inspired by the beautiful & colorful{" "}
+                  Inspired by the graceful movement of{" "}
                   <span className="font-bold">Koi Fish</span>, this collection
-                  embodies dedication and bravery. In Japanese culture, Koi
-                  symbolizes wealth, luck, victory, and above all — love.
+                  symbolizes love, prosperity, and the beauty of connection.
+                  Each piece tells a story of elegance swimming through time,
+                  celebrating the bonds that bring us together.
                 </p>
                 <p>
                   The word 'Koi' is a homophone for 'love', meaning 'affection'
@@ -144,7 +246,7 @@ const Home = () => {
               </div>
               <div className="border-l-4 border-primary pl-8 py-2">
                 <p className="font-script text-3xl text-text-main-light dark:text-text-main-dark">
-                  "Let's keep yourself inspired"
+                  "All the fish in the sea, I'm so glad you swam to me."
                 </p>
               </div>
               <div className="flex flex-wrap gap-4 pt-4">
@@ -189,7 +291,7 @@ const Home = () => {
                 <img
                   alt="Colour ARC Ring"
                   className="w-full h-auto object-cover"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8upGw2GjwEvqLetBhms9zKBgEapcZlvJ9_hYIyDc9eL990hwONLNdy3RkLQjgIpKGusXZ3OhhJhGvKR1Dr39eIsjmo4iz5XGtYS2bhXSnpY0WG_GEj9wqSd-Z36fzfezZX45MxoWR3ioocx_AA8U8PBebgzvNjpF7YyivvVq2D5X-SzApYKuDJLlF18OZyvfuXugVNNX8q74hwgcUyhP9hRPAiM8ltFdTj0eqUqNcSBaauCvUhYJ4XVvplQwjH4HuJfX7Lb_R2Agj"
+                  src={colorarc}
                 />
               </div>
             </div>
@@ -254,12 +356,12 @@ const Home = () => {
               <img
                 alt="Fine Jewelry Category"
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfCSU1KzwU-olDeVOj_GuAGOk-0cB5clAwz-JkZd-8GcKpNa2BokXMG2rDpzUgImmAlp7XeY1jzNdNGqYbcRYHWI4cgtvcknyJjDtID8fsXnLbwyPfO4WiGD8adDmqDDgshIW3SoxRhTFheSsVoinIGZHVCMO3vmO0FUlc4QoBb-9Wq55YTdZbAhzlROWBWlRtiBaS7PCH30t8-qVyitPBa-zutAA4t6EsNAZlkJBqhHlMk2J2_phuKTWZmtPvpWzCwFsRsEBr1ZtZ"
+                src={ruby}
               />
               <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors"></div>
               <div className="absolute bottom-10 left-10">
                 <h3 className="text-3xl text-white font-serif tracking-wide">
-                  Fine Jewelry
+                  Ruby Radiance
                 </h3>
               </div>
             </Link>
@@ -270,7 +372,7 @@ const Home = () => {
               <img
                 alt="S-Orbit Category"
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDukxcd8Ejhy3YefoVjo0Qbm33LM4U_ETtt5UwJXLK8hdMqnKobhYmi5S5KuzKnIdHMbvI1ghh89DJL0kc-UpZ3HLt8r-gZpIMdi8ZLL97IyuoI5dgiwCsb1UE9VB4aj74lFyWb9TzS60bMt1un_6_wtwhZumCM6ndlOK2VtrxeuYyf5seI5uBFqjuyUmo-MmFf7_NBoNLIaEFJCi91oeVvJ9qr2whukQvYM_tYY72KzyvYWVOUFFVmFt200Os0cA3zPjS-61KE0Mpu"
+                src={sorbit}
               />
               <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors"></div>
               <div className="absolute bottom-10 left-10">
