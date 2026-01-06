@@ -226,7 +226,7 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
                 <img
                   src={logo}
                   alt="GEMS MUSE Logo"
-                  className="h-10 md:h-12 w-auto object-contain transition-all duration-500 group-hover:scale-105 group-hover:opacity-80 dark:invert"
+                  className="h-20 md:h-20 w-auto object-contain transition-all duration-500 group-hover:scale-105 group-hover:opacity-80 dark:invert"
                 />
               </Link>
             </div>
@@ -265,7 +265,6 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
 
               <div ref={bagRef} className="relative">
                 <button
-                  onMouseEnter={() => setShowBagDropdown(true)}
                   onClick={() => setShowBagDropdown(!showBagDropdown)}
                   className="hover:text-primary transition-colors relative"
                   title="Shopping Bag"
