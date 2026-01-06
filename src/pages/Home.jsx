@@ -4,7 +4,7 @@ import { MOCK_PRODUCTS } from "../constants";
 import koi from "../assets/koi.jpg";
 import colorarc from "../assets/colorarc.jpg";
 import ruby from "../assets/ruby.jpg";
-import sorbit from "../assets/sorbit.jpg";
+import sorbit from "../assets/s-orbit.JPG";
 
 const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
