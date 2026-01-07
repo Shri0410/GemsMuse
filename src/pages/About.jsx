@@ -1,5 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import crafting from "../assets/ouressence/crafting.jpeg";
+import shashi from "../assets/ouressence/SHASHI.jpg";
+import ranju from "../assets/ouressence/Ranju.jpeg";
 
 const About = () => {
   return (
@@ -33,7 +36,7 @@ const About = () => {
             </span>
             <p className="text-text-main-dark/80 text-sm md:text-lg max-w-xl mx-auto font-light tracking-wide leading-relaxed">
               A journey through time, artistry, and the unwavering pursuit of
-              perfection. Crafting legacies since 1985.
+              perfection. Crafting legacies since 2021.
             </p>
           </div>
         </div>
@@ -48,13 +51,13 @@ const About = () => {
                 <img
                   alt="Crafting a Legacy"
                   className="w-full h-auto object-cover"
-                  src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=2070&auto=format&fit=crop"
+                  src={crafting}
                 />
               </div>
             </div>
             <div className="w-full lg:w-1/2 space-y-8">
               <span className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase block">
-                Established 1985
+                Established 2021
               </span>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-text-main-light dark:text-text-main-dark">
                 Crafting a <span className="italic text-primary">Legacy</span>
@@ -63,8 +66,9 @@ const About = () => {
                 <p>
                   Gems Muse was born from a desire to capture the ephemeral
                   beauty of nature in eternal forms. What started as a small
-                  atelier in the heart of the jewelry district has blossomed
-                  into a sanctuary for bespoke luxury.
+                  atelier in the heart of the jewelry district of Hong Kong has
+                  blossomed into a sanctuary for bespoke luxury as well as
+                  manufacturing & export house supplying worldwide.
                 </p>
                 <p>
                   Our journey is defined not just by the jewels we create, but
@@ -77,7 +81,7 @@ const About = () => {
               </div>
               <div className="pt-6">
                 <span className="font-script text-4xl text-primary block mb-2">
-                  Alexander & Sophia
+                  Shashi & Dr. Ranju
                 </span>
                 <span className="text-[10px] uppercase tracking-[0.3em] text-text-muted-light">
                   Founders
@@ -152,15 +156,15 @@ const About = () => {
               </h2>
               <div className="space-y-6 text-text-muted-light dark:text-text-muted-dark font-light text-sm leading-relaxed">
                 <p>
-                  Alexander Sterling and Sophia Valenti met in a small design
-                  studio in Florence. Bonding over a shared love for Renaissance
+                  Shashi Bhushan and Dr. Ranju Kumari met & married in a small
+                  village in India. Bonding over a shared love for Renaissance
                   art and modern minimalism, they founded Gems Muse to bridge
                   the gap between the two worlds.
                 </p>
                 <p>
                   "Jewelry is more than adornment; it is a personal signature,"
-                  says Sophia. Their collaborative approach ensures that every
-                  collection balances structural boldness with delicate
+                  says Dr. Ranju. Their collaborative approach ensures that
+                  every collection balances structural boldness with delicate
                   intricacy.
                 </p>
               </div>
@@ -186,12 +190,12 @@ const About = () => {
                 <img
                   alt="Alexander Sterling"
                   className="w-full h-[600px] object-cover filter grayscale-[10%] group-hover:grayscale-0 transition-all duration-700"
-                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop"
+                  src={shashi}
                 />
                 <div className="absolute bottom-5 left-1 right-6 bg-white dark:bg-surface-dark p-6 shadow-xl transform translate-y-4 opacity-90 group-hover:translate-y-0 transition-all border-l-4 border-primary">
-                  <h4 className="text-lg font-serif">Alexander Sterling</h4>
+                  <h4 className="text-lg font-serif">Shashi Bhushan</h4>
                   <p className="text-[10px] uppercase tracking-widest text-text-muted-light mt-1">
-                    Co-Founder & Lead Designer
+                    Founder, Director & Lead Designer
                   </p>
                 </div>
               </div>
@@ -199,12 +203,12 @@ const About = () => {
                 <img
                   alt="Sophia Valenti"
                   className="w-full h-[600px] object-cover filter grayscale-[10%] group-hover:grayscale-0 transition-all duration-700"
-                  src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop"
+                  src={ranju}
                 />
                 <div className="absolute bottom-5 left-6 right-1 bg-white dark:bg-surface-dark p-6 shadow-xl transform translate-y-4 opacity-90 group-hover:translate-y-0 transition-all border-r-4 border-primary">
-                  <h4 className="text-lg font-serif">Sophia Valenti</h4>
+                  <h4 className="text-lg font-serif">Dr. Ranju Kumari</h4>
                   <p className="text-[10px] uppercase tracking-widest text-text-muted-light mt-1">
-                    Co-Founder & Creative Director
+                    Co-Founder & Merchandiser
                   </p>
                 </div>
               </div>

@@ -325,9 +325,6 @@ const Collection = () => {
                   <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark uppercase tracking-[0.2em] mb-2 font-medium">
                     {product.material}
                   </p>
-                  <p className="text-sm font-bold text-text-main-light dark:text-text-main-dark tracking-wider">
-                    ${product.price.toLocaleString()}
-                  </p>
                 </div>
               </Link>
             ))}

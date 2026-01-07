@@ -17,7 +17,7 @@ const Footer = () => {
             </div>
             <p className="mb-6 font-light leading-relaxed text-xs">
               Crafting timeless pieces that celebrate love, artistry, and the
-              beauty of precious gemstones since our inception in 1985.
+              beauty of precious gemstones since our inception in 2021.
             </p>
             <div className="flex gap-4">
               <a
@@ -86,9 +86,9 @@ const Footer = () => {
                 <span className="material-icons-outlined text-primary text-sm mt-0.5">
                   location_on
                 </span>
-                <span>
-                  Unit 1406, 14/F, Chevalier House,45-51, Chattham Road, Tsim
-                  Sha Tsui , Kowloon, Hong Kong SAR
+                <span className="text-[13px]">
+                  Unit 1406, 14/F, Chevalier House, 45-51, Chattham Road, <br />{" "}
+                  Tsim Sha Tsui , Kowloon, <br /> Hong Kong SAR
                 </span>
               </li>
               <li className="flex items-center gap-3">
@@ -107,7 +107,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs font-light">
-          <p>© 2024 Gems Muse. All rights reserved.</p>
+          <p>© 2026 Gems Muse. All rights reserved.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <a className="hover:text-white transition-colors" href="#">
               Privacy Policy

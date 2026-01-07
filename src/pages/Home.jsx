@@ -58,7 +58,7 @@ const Home = () => {
         </div>
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
           <p className="text-primary text-[10px] md:text-xs tracking-[0.5em] uppercase mb-8 animate-fade-in-up font-bold">
-            Exquisite Jewelry
+            MANUFACTURER & EXPORTER
           </p>
           <h1 className="text-6xl md:text-8xl lg:text-9xl text-white font-serif mb-8 leading-none tracking-tight">
             Where Elegance <br />
@@ -68,7 +68,7 @@ const Home = () => {
           </h1>
           <p className="text-gray-300 text-sm md:text-base max-w-xl mx-auto mb-12 font-light tracking-widest leading-relaxed">
             Discover timeless pieces crafted with passion, precision, and the
-            finest gemstones from around the world.
+            finest gemstones from across the world.
           </p>
           <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
             <Link
@@ -145,9 +145,6 @@ const Home = () => {
                       </h3>
                       <p className="text-text-muted-light dark:text-text-muted-dark text-[10px] font-light leading-relaxed tracking-wider uppercase mb-1 line-clamp-1">
                         {product.description}
-                      </p>
-                      <p className="text-primary text-xs font-bold tracking-widest mt-2">
-                        ${product.price.toLocaleString()}
                       </p>
                     </Link>
                   </div>
@@ -318,7 +315,7 @@ const Home = () => {
                   but at the same time there is magic and poetry in this
                   phenomenon, something beyond a pure comprehension.
                 </p>
-                <p className="text-[11px] italic opacity-60">
+                <p className="text-[11px] opacity-100">
                   Made in 18K Rose & Yellow Gold studded with beautiful Pink
                   Kunzite & Colorful Sapphires.
                 </p>

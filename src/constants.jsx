@@ -5,6 +5,7 @@ import amore from "./assets/collections/amore.jpg";
 import colorarc from "./assets/collections/colorarc.jpg";
 import ruby from "./assets/collections/ruby.jpg";
 import sorbit from "./assets/collections/sorbit.jpg";
+import lab from "./assets/collections/LabLore.JPG";
 
 export const COLORS = {
   primary: "#C5A065",
@@ -82,13 +83,13 @@ export const MOCK_PRODUCTS = [
   },
   {
     id: "8",
-    name: "Zen Arch Ring",
+    name: "Lab Lore- Modern & Classy",
     category: "Rings",
     price: 980,
     material: "18K Yellow Gold",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDq5SW83WjWBZfz0rkOUkKTMx9NFRIjpr6Zbo1zToJ5UbrD4SmkFtkeoG-7JclGWZmyNeenmmgSwRTIIfmEekgtHB4gIt1luzcnQejPDFxFiKwkvBnPVQp0MpvrnxvDqZznMibxkN1tZ7poUXF3Tdo6Zxo3zp_4qA4b37G-XJWbfYksDEVu1GPpI0lljEmoLjLfrt9CzgWgPkxeUBqlYSnjeoTa4_oREKWz4MYfKaz53ktBN5RKkET-4djZBDhp6HfjXgp2DLrj_4h-",
-    description: "Simplicity and balance in architectural gold.",
+    image: lab,
+    description:
+      "14K Gold and lab grown diamonds as well gem stones represent the perfect blend of modern innovation, ethical sourcing, and timeless luxury.",
   },
 ];
 
