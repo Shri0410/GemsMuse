@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MOCK_PRODUCTS } from "../constants";
-import logo from "../assets/White.jpg";
+import logo from "../assets/logo.png";
 
 const Navbar = ({ toggleDarkMode, isDarkMode }) => {
   const navigate = useNavigate();
@@ -98,10 +98,9 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
     if (!isSearchOpen) {
       setIsSearchOpen(true);
       setTimeout(() => searchInputRef.current?.focus(), 100);
-    } else if (searchQuery.trim()) {
-      handleSearchSubmit({ preventDefault: () => {} });
     } else {
       setIsSearchOpen(false);
+      setSearchQuery("");
     }
   };
 
@@ -128,247 +127,316 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
     );
   }, [bagProducts]);
 
-  return (
-    <nav className="fixed top-0 w-full z-[100] bg-white dark:bg-background-dark/95 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 transition-all duration-300 py-4 md:py-6">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex justify-between items-center relative">
-          {/* Left: Menu & Search */}
-          <div className="flex items-center gap-4 md:gap-8 lg:w-1/3">
-            <button
-              onClick={() => setIsMenuOpen(true)}
-              className="flex items-center gap-2 hover:text-primary transition-colors group"
-            >
-              <span className="material-icons-outlined text-2xl">menu</span>
-              <span className="text-[10px] uppercase tracking-[0.2em] font-bold hidden sm:inline-block">
-                Menu
-              </span>
-            </button>
-
-            <div ref={searchRef} className="flex items-center relative">
-              <button
-                type="button"
-                onClick={toggleSearch}
-                className="flex items-center justify-center hover:scale-110 transition-transform"
-              >
-                <span
-                  className={`material-icons-outlined text-xl transition-colors ${
-                    isSearchOpen
-                      ? "text-primary"
-                      : "text-text-main-light dark:text-text-main-dark hover:text-primary"
-                  }`}
-                >
-                  search
+  const NavIcons = ({ isMobile = false }) => (
+    <div
+      className={`flex items-center gap-5 md:gap-7 ${
+        isMobile
+          ? "justify-around w-full py-8 border-b border-gray-100 dark:border-gray-800"
+          : ""
+      }`}
+    >
+      <button
+        onClick={() => {
+          navigate("/auth");
+          if (isMobile) setIsMenuOpen(false);
+        }}
+        className="hover:text-primary transition-colors flex items-center"
+      >
+        <span className="material-icons-outlined text-xl">person</span>
+      </button>
+      <button
+        onClick={toggleDarkMode}
+        className="hover:text-primary transition-colors flex items-center"
+      >
+        <span className="material-icons-outlined text-xl">
+          {isDarkMode ? "light_mode" : "dark_mode"}
+        </span>
+      </button>
+      <button
+        onClick={() => {
+          navigate("/wishlist");
+          if (isMobile) setIsMenuOpen(false);
+        }}
+        className="hover:text-primary transition-colors relative flex items-center"
+      >
+        <span className="material-icons-outlined text-xl">favorite_border</span>
+        {wishlistCount > 0 && (
+          <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-primary text-white text-[8px] flex items-center justify-center rounded-full font-bold">
+            {wishlistCount}
+          </span>
+        )}
+      </button>
+      <div
+        ref={!isMobile ? bagRef : null}
+        className="relative flex items-center"
+      >
+        <button
+          onClick={() =>
+            isMobile
+              ? (navigate("/collection"), setIsMenuOpen(false))
+              : setShowBagDropdown(!showBagDropdown)
+          }
+          className="hover:text-primary transition-colors relative flex items-center"
+        >
+          <span className="material-icons-outlined text-xl">shopping_bag</span>
+          {bag.length > 0 && (
+            <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-primary text-white text-[8px] flex items-center justify-center rounded-full font-bold">
+              {bag.reduce((acc, curr) => acc + curr.quantity, 0)}
+            </span>
+          )}
+        </button>
+        {!isMobile && showBagDropdown && (
+          <div className="absolute top-full right-0 mt-6 w-80 md:w-96 bg-white dark:bg-surface-dark shadow-2xl border border-gray-100 dark:border-gray-800 z-[120] animate-fade-in-up origin-top-right">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6 border-b border-gray-50 dark:border-gray-800 pb-4">
+                <span className="text-[10px] uppercase tracking-[0.3em] font-bold">
+                  Your Bag ({bag.length})
                 </span>
-              </button>
-              <div
-                className={`overflow-hidden transition-all duration-500 ease-in-out flex items-center ${
-                  isSearchOpen
-                    ? "w-32 md:w-48 opacity-100 ml-2"
-                    : "w-0 opacity-0 ml-0"
-                }`}
-              >
-                <form onSubmit={handleSearchSubmit}>
-                  <input
-                    ref={searchInputRef}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="bg-transparent border-0 border-b border-gray-200 dark:border-gray-700 focus:border-primary focus:ring-0 px-0 py-1 w-full text-xs text-text-main-light dark:text-text-main-dark placeholder-gray-400"
-                    placeholder="Search treasures..."
-                    type="text"
-                  />
-                </form>
+                <button
+                  onClick={() => setShowBagDropdown(false)}
+                  className="text-text-muted-light hover:text-primary"
+                >
+                  <span className="material-icons-outlined text-sm">close</span>
+                </button>
               </div>
-              {showSuggestions && suggestions.length > 0 && (
-                <div className="absolute top-full left-0 mt-6 w-80 bg-white dark:bg-surface-dark shadow-2xl border border-gray-100 dark:border-gray-800 rounded-sm overflow-hidden z-[110]">
-                  <div className="p-3 bg-gray-50 dark:bg-black/20 border-b border-gray-100 dark:border-gray-800">
-                    <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary">
-                      Suggestions
+              <div className="max-h-80 overflow-y-auto pr-2 no-scrollbar">
+                {bagProducts.length > 0 ? (
+                  <div className="space-y-6">
+                    {bagProducts.map((item) => (
+                      <div key={item.id} className="flex gap-4 group">
+                        <div className="w-16 h-16 bg-gray-50 dark:bg-black/20 flex-shrink-0 p-2">
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                        <div className="flex-grow">
+                          <div className="flex justify-between items-start">
+                            <h4 className="text-xs font-serif font-bold group-hover:text-primary transition-colors">
+                              {item.name}
+                            </h4>
+                            <button
+                              onClick={() => removeFromBag(item.id)}
+                              className="text-text-muted-light hover:text-red-500"
+                            >
+                              <span className="material-icons-outlined text-xs">
+                                delete_outline
+                              </span>
+                            </button>
+                          </div>
+                          <p className="text-[9px] text-text-muted-light uppercase tracking-widest mt-1">
+                            ${item.price.toLocaleString()} x {item.quantity}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="py-12 text-center text-text-muted-light italic text-xs">
+                    Your bag is empty.
+                  </div>
+                )}
+              </div>
+              {bagProducts.length > 0 && (
+                <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] uppercase tracking-[0.2em] font-bold">
+                      Subtotal
+                    </span>
+                    <span className="text-sm font-bold">
+                      ${subtotal.toLocaleString()}
                     </span>
                   </div>
-                  {suggestions.map((product) => (
-                    <button
-                      key={product.id}
-                      onClick={() => handleSuggestionClick(product.id)}
-                      className="w-full flex items-center gap-4 p-4 hover:bg-primary/5 transition-colors text-left border-b border-gray-50 dark:border-gray-800 last:border-0"
-                    >
-                      <div className="w-10 h-10 bg-gray-50 dark:bg-black/20 p-1">
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
-                      <div className="flex-grow">
-                        <h4 className="text-[10px] font-bold uppercase tracking-wide">
-                          {product.name}
-                        </h4>
-                      </div>
-                    </button>
-                  ))}
+                  <button className="w-full bg-primary hover:bg-primary-hover text-white py-4 text-[10px] uppercase tracking-[0.3em] font-bold transition-all shadow-xl">
+                    Checkout
+                  </button>
                 </div>
               )}
             </div>
           </div>
+        )}
+      </div>
+    </div>
+  );
 
-          {/* Center: Logo */}
-          <div className="lg:w-1/3 flex justify-center">
+  const SearchBar = () => (
+    <div
+      ref={searchRef}
+      className="flex items-center justify-end relative h-10"
+    >
+      <div
+        className={`flex items-center bg-gray-50 dark:bg-black/20 rounded-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden ${
+          isSearchOpen ? "w-48 md:w-64 px-4 opacity-100" : "w-0 px-0 opacity-0"
+        }`}
+      >
+        <form onSubmit={handleSearchSubmit} className="w-full">
+          <input
+            ref={searchInputRef}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="bg-transparent border-none focus:ring-0 px-0 py-1 w-full text-[13px] text-text-main-light dark:text-text-main-dark placeholder-gray-400 font-light"
+            placeholder="Search our curation..."
+            type="text"
+          />
+        </form>
+      </div>
+      <button
+        type="button"
+        onClick={toggleSearch}
+        className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 z-10 ${
+          isSearchOpen
+            ? "text-primary"
+            : "text-text-main-light dark:text-text-main-dark hover:text-primary"
+        }`}
+      >
+        <span className="material-icons-outlined text-xl">
+          {isSearchOpen ? "close" : "search"}
+        </span>
+      </button>
+
+      {showSuggestions && suggestions.length > 0 && (
+        <div className="absolute top-full right-0 mt-6 w-80 bg-white dark:bg-surface-dark shadow-2xl border border-gray-100 dark:border-gray-800 rounded-sm overflow-hidden z-[110] animate-fade-in-up">
+          <div className="p-3 bg-gray-50 dark:bg-black/20 border-b border-gray-100 dark:border-gray-800">
+            <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary">
+              Suggestions
+            </span>
+          </div>
+          {suggestions.map((product) => (
+            <button
+              key={product.id}
+              onClick={() => handleSuggestionClick(product.id)}
+              className="w-full flex items-center gap-4 p-4 hover:bg-primary/5 transition-colors text-left border-b border-gray-50 dark:border-gray-800 last:border-0"
+            >
+              <div className="w-10 h-10 bg-gray-50 dark:bg-black/20 p-1">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <h4 className="text-[10px] font-bold uppercase tracking-wide">
+                {product.name}
+              </h4>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <nav className="fixed top-0 w-full z-[100] bg-white dark:bg-background-dark border-b border-gray-100 dark:border-gray-800 py-4 md:py-6">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="flex justify-between items-center relative">
+          <div className="lg:w-1/3 flex items-center">
+            <div className="md:hidden">
+              <Link to="/" className="flex items-center">
+                <img
+                  src={logo}
+                  alt="GEMS MUSE"
+                  className="h-11 w-auto dark:invert"
+                />
+              </Link>
+            </div>
+            <div className="hidden md:flex items-center gap-8">
+              <button
+                onClick={() => setIsMenuOpen(true)}
+                className="flex items-center gap-2 hover:text-primary transition-colors group"
+              >
+                <span className="material-icons-outlined text-2xl">menu</span>
+                <span className="text-[10px] uppercase tracking-[0.2em] font-bold hidden sm:inline-block">
+                  Menu
+                </span>
+              </button>
+              <div className="flex items-center justify-start h-10">
+                <div
+                  ref={searchRef}
+                  className="flex items-center relative h-10"
+                >
+                  <button
+                    type="button"
+                    onClick={toggleSearch}
+                    className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 ${
+                      isSearchOpen
+                        ? "text-primary"
+                        : "text-text-main-light dark:text-text-main-dark hover:text-primary"
+                    }`}
+                  >
+                    <span className="material-icons-outlined text-xl">
+                      {isSearchOpen ? "close" : "search"}
+                    </span>
+                  </button>
+                  <div
+                    className={`flex items-center bg-gray-50 dark:bg-black/20 rounded-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden ${
+                      isSearchOpen
+                        ? "w-64 px-4 opacity-100 ml-2"
+                        : "w-0 px-0 opacity-0"
+                    }`}
+                  >
+                    <form onSubmit={handleSearchSubmit} className="w-full">
+                      <input
+                        ref={searchInputRef}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="bg-transparent border-none focus:ring-0 px-0 py-1 w-full text-[13px] text-text-main-light dark:text-text-main-dark placeholder-gray-400 font-light"
+                        placeholder="Search our curation..."
+                        type="text"
+                      />
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="hidden md:flex lg:w-1/3 justify-center">
             <Link to="/" className="cursor-pointer group">
               <img
                 src={logo}
                 alt="GEMS MUSE"
-                className="h-20 md:h-20 w-auto object-contain transition-all duration-500 group-hover:scale-105 dark:invert"
+                className="h-20 w-auto object-contain transition-all duration-500 group-hover:scale-105 dark:invert"
               />
             </Link>
           </div>
 
-          {/* Right: Theme, Account, Wishlist, Bag */}
-          <div className="flex items-center justify-end gap-5 md:gap-7 lg:w-1/3">
-            <button
-              onClick={toggleDarkMode}
-              className="hover:text-primary transition-colors flex items-center"
-              title="Toggle Theme"
-            >
-              <span className="material-icons-outlined text-xl">
-                {isDarkMode ? "light_mode" : "dark_mode"}
-              </span>
-            </button>
-            <button
-              onClick={() => navigate("/auth")}
-              className="hover:text-primary transition-colors flex items-center"
-              title="My Account"
-            >
-              <span className="material-icons-outlined text-xl">person</span>
-            </button>
-
-            <button
-              onClick={() => navigate("/wishlist")}
-              className="hover:text-primary transition-colors relative flex items-center"
-              title="Favorites"
-            >
-              <span className="material-icons-outlined text-xl">
-                favorite_border
-              </span>
-              {wishlistCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-primary text-white text-[8px] flex items-center justify-center rounded-full font-bold">
-                  {wishlistCount}
-                </span>
-              )}
-            </button>
-
-            <div ref={bagRef} className="relative flex items-center">
+          <div className="flex items-center justify-end lg:w-1/3">
+            <div className="md:hidden flex items-center gap-4">
+              <SearchBar />
               <button
-                onClick={() => setShowBagDropdown(!showBagDropdown)}
-                className="hover:text-primary transition-colors relative flex items-center"
-                title="Selections"
+                onClick={() => setIsMenuOpen(true)}
+                className="flex items-center text-text-main-light dark:text-text-main-dark hover:text-primary transition-colors"
               >
-                <span className="material-icons-outlined text-xl">
-                  shopping_bag
-                </span>
-                {bag.length > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-primary text-white text-[8px] flex items-center justify-center rounded-full font-bold">
-                    {bag.reduce((acc, curr) => acc + curr.quantity, 0)}
-                  </span>
-                )}
+                <span className="material-icons-outlined text-2xl">menu</span>
               </button>
-
-              {showBagDropdown && (
-                <div className="absolute top-full right-0 mt-6 w-80 md:w-96 bg-white dark:bg-surface-dark shadow-2xl border border-gray-100 dark:border-gray-800 z-[120] animate-fade-in-up origin-top-right">
-                  <div className="p-6">
-                    <div className="flex justify-between items-center mb-6 border-b border-gray-50 dark:border-gray-800 pb-4">
-                      <span className="text-[10px] uppercase tracking-[0.3em] font-bold">
-                        My Selections ({bag.length})
-                      </span>
-                      <button
-                        onClick={() => setShowBagDropdown(false)}
-                        className="text-text-muted-light hover:text-primary"
-                      >
-                        <span className="material-icons-outlined text-sm">
-                          close
-                        </span>
-                      </button>
-                    </div>
-
-                    <div className="max-h-80 overflow-y-auto pr-2 no-scrollbar">
-                      {bagProducts.length > 0 ? (
-                        <div className="space-y-6">
-                          {bagProducts.map((item) => (
-                            <div key={item.id} className="flex gap-4 group">
-                              <div className="w-16 h-16 bg-gray-50 dark:bg-black/20 flex-shrink-0 p-2">
-                                <img
-                                  src={item.image}
-                                  alt={item.name}
-                                  className="w-full h-full object-contain"
-                                />
-                              </div>
-                              <div className="flex-grow">
-                                <div className="flex justify-between items-start">
-                                  <h4 className="text-xs font-serif font-bold group-hover:text-primary transition-colors">
-                                    {item.name}
-                                  </h4>
-                                  <button
-                                    onClick={() => removeFromBag(item.id)}
-                                    className="text-text-muted-light hover:text-red-500"
-                                  >
-                                    <span className="material-icons-outlined text-xs">
-                                      delete_outline
-                                    </span>
-                                  </button>
-                                </div>
-                                <p className="text-[9px] text-text-muted-light uppercase tracking-widest mt-1">
-                                  ${item.price.toLocaleString()} x{" "}
-                                  {item.quantity}
-                                </p>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="py-12 text-center text-text-muted-light italic text-xs">
-                          Your bag is empty.
-                        </div>
-                      )}
-                    </div>
-
-                    {bagProducts.length > 0 && (
-                      <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 space-y-4">
-                        <div className="flex justify-between items-center">
-                          <span className="text-[10px] uppercase tracking-[0.2em] font-bold">
-                            Subtotal
-                          </span>
-                          <span className="text-sm font-bold">
-                            ${subtotal.toLocaleString()}
-                          </span>
-                        </div>
-                        <button className="w-full bg-primary hover:bg-primary-hover text-white py-4 text-[10px] uppercase tracking-[0.3em] font-bold transition-all shadow-xl">
-                          Checkout
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
+            </div>
+            <div className="hidden md:flex">
+              <NavIcons />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Side Navigation Menu */}
       <div
-        className={`fixed  inset-0 bg-white/70 z-[200] transition-opacity duration-500 ${
+        className={`fixed inset-0 bg-black/40 z-[200] transition-opacity duration-500 ${
           isMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setIsMenuOpen(false)}
       >
         <div
           ref={menuRef}
-          className={`absolute top-0 left-0 h-full w-full  max-w-sm bg-white shadow-[0_0_50px_rgba(0,0,0,0.1)] transition-transform duration-500 ease-in-out ${
+          className={`absolute top-0 left-0 h-full w-full md:w-[30%] bg-white dark:bg-background-dark shadow-[0_0_50px_rgba(0,0,0,0.1)] transition-transform duration-500 ease-in-out ${
             isMenuOpen ? "translate-x-0" : "-translate-x-full"
           }`}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="py-10 flex flex-col h-auto bg-white">
-            <div className="flex justify-between items-center mb-16 px-10">
-              <img src={logo} alt="GEMS MUSE" className="h-14 w-auto" />
+          <div className="p-10 flex flex-col h-full bg-white dark:bg-background-dark">
+            <div className="flex justify-between items-center mb-8">
+              <img
+                src={logo}
+                alt="GEMS MUSE"
+                className="h-20 w-auto dark:invert"
+              />
               <button
                 onClick={() => setIsMenuOpen(false)}
                 className="text-text-muted-light hover:text-primary transition-colors"
@@ -377,18 +445,22 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
               </button>
             </div>
 
-            <nav className="flex flex-col gap-8 bg-white p-10">
+            <div className="md:hidden">
+              <NavIcons isMobile={true} />
+            </div>
+
+            <nav className="flex flex-col gap-8 mt-12">
               <Link
                 to="/collection"
                 onClick={() => setIsMenuOpen(false)}
-                className="text-2xl font-serif text-[#121212] hover:text-primary transition-all hover:pl-2 bg-white"
+                className="text-2xl font-serif text-text-main-light dark:text-text-main-dark hover:text-primary transition-all hover:pl-2"
               >
-                Collection
+                Products
               </Link>
               <Link
                 to="/about"
                 onClick={() => setIsMenuOpen(false)}
-                className="text-2xl font-serif text-[#121212] hover:text-primary transition-all hover:pl-2 bg-white"
+                className="text-2xl font-serif text-text-main-light dark:text-text-main-dark hover:text-primary transition-all hover:pl-2"
               >
                 Our Essence
               </Link>

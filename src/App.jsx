@@ -4,13 +4,14 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Collection from "./pages/Collection";
+import CollectionDetail from "./pages/CollectionDetail";
 import ProductDetails from "./pages/ProductDetails";
 import Bespoke from "./pages/Bespoke";
 import Repairs from "./pages/Repairs";
+import Services from "./pages/Services";
 import Auth from "./pages/Auth";
 import About from "./pages/About";
 import Profile from "./pages/Profile";
-import Services from "./pages/Services";
 import Wishlist from "./pages/Wishlist";
 
 const ScrollToTop = () => {
@@ -86,6 +87,10 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/collection" element={<Collection />} />
+            <Route
+              path="/collections/:collectionId"
+              element={<CollectionDetail />}
+            />
             <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/bespoke" element={<Bespoke />} />
             <Route path="/repairs" element={<Repairs />} />

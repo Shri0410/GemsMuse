@@ -19,6 +19,14 @@ const ProductDetails = () => {
     ).slice(0, 4);
   }, [product]);
 
+  const collectionProducts = useMemo(() => {
+    if (!product || !product.collection) return [];
+    return MOCK_PRODUCTS.filter(
+      (p) => p.collection === product.collection && p.id !== product.id
+    );
+  }, [product]);
+
+  // Load wishlist from localStorage on mount
   useEffect(() => {
     const wishlist = JSON.parse(
       localStorage.getItem("gems_muse_wishlist") || "[]"
@@ -87,6 +95,7 @@ const ProductDetails = () => {
 
   return (
     <div className="pt-24 bg-white dark:bg-background-dark min-h-screen relative">
+      {/* Feedback Toast */}
       {showToast && (
         <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 z-[200] animate-fade-in-up">
           <div className="bg-black/90 text-white px-8 py-4 text-[10px] uppercase tracking-[0.3em] font-bold shadow-2xl flex items-center gap-3">
@@ -98,6 +107,7 @@ const ProductDetails = () => {
         </div>
       )}
 
+      {/* Breadcrumbs */}
       <div className="max-w-7xl mx-auto px-6 py-6">
         <nav className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-text-muted-light font-bold">
           <Link to="/" className="hover:text-primary">
@@ -118,8 +128,10 @@ const ProductDetails = () => {
         </nav>
       </div>
 
+      {/* Main Product Section */}
       <section className="max-w-7xl mx-auto px-6 pb-24 lg:pb-32">
         <div className="flex flex-col lg:flex-row gap-16 xl:gap-24">
+          {/* Left Column: Image Gallery */}
           <div className="w-full lg:w-3/5">
             <div className="sticky top-40 space-y-8">
               <div className="relative aspect-[4/5] bg-[#FAF8F5] dark:bg-surface-dark flex items-center justify-center p-12 overflow-hidden shadow-sm">
@@ -141,7 +153,7 @@ const ProductDetails = () => {
                 >
                   <span
                     className={`material-icons-outlined text-xl transition-all duration-300 ${
-                      isLiked ? "scale-125" : "scale-100"
+                      isLiked ? "favorite" : "favorite_border"
                     }`}
                   >
                     {isLiked ? "favorite" : "favorite_border"}
@@ -165,6 +177,7 @@ const ProductDetails = () => {
             </div>
           </div>
 
+          {/* Right Column: Details & Actions */}
           <div className="w-full lg:w-2/5 space-y-10">
             <div>
               <span className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase block mb-4">
@@ -273,6 +286,7 @@ const ProductDetails = () => {
               </div>
             </div>
 
+            {/* Tabs / Accordion */}
             <div className="pt-8 space-y-6">
               <div className="flex items-center gap-10 border-b border-gray-100 dark:border-gray-800">
                 {["Details", "Shipping", "Ethics"].map((tab) => (
@@ -334,6 +348,7 @@ const ProductDetails = () => {
         </div>
       </section>
 
+      {/* Related Products */}
       {relatedProducts.length > 0 && (
         <section className="py-24 bg-[#FAF8F5] dark:bg-[#151515] border-t border-gray-100 dark:border-gray-800">
           <div className="max-w-7xl mx-auto px-6">
@@ -368,7 +383,43 @@ const ProductDetails = () => {
         </section>
       )}
 
-      <section className="py-20 bg-white dark:bg-background-dark">
+      {/* Products From Sets */}
+      {collectionProducts.length > 0 && (
+        <section className="py-24 bg-white dark:bg-background-dark border-t border-gray-100 dark:border-gray-800">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="flex flex-col items-center mb-16">
+              <span className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase block mb-4">
+                The Collection Suite
+              </span>
+              <h2 className="text-3xl font-serif">Products From Sets</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+              {collectionProducts.map((p) => (
+                <Link
+                  to={`/product/${p.id}`}
+                  key={p.id}
+                  className="group cursor-pointer text-center"
+                >
+                  <div className="relative overflow-hidden bg-[#FAF8F5] dark:bg-surface-dark mb-6 aspect-square flex items-center justify-center p-8 transition-all duration-500 hover:shadow-xl">
+                    <img
+                      alt={p.name}
+                      className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
+                      src={p.image}
+                    />
+                  </div>
+                  <h3 className="text-lg font-serif mb-2">{p.name}</h3>
+                  <p className="text-sm font-medium tracking-wide">
+                    ${p.price.toLocaleString()}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Book a Private Session */}
+      <section className="py-20 bg-white dark:bg-background-dark border-t border-gray-100 dark:border-gray-800">
         <div className="max-w-4xl mx-auto px-6">
           <div className="bg-[#121212] dark:bg-surface-dark p-12 md:p-16 text-center text-white relative overflow-hidden group">
             <div className="absolute top-0 left-0 w-full h-1 bg-primary"></div>
