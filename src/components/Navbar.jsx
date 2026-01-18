@@ -3,9 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { MOCK_PRODUCTS } from "../constants";
 import logo from "../assets/logo.png";
 
+import { useCustomerAuth } from "../context/CustomerAuthContext";
+
 const Navbar = ({ toggleDarkMode, isDarkMode }) => {
   const navigate = useNavigate();
+  const { customer } = useCustomerAuth();
   const [searchQuery, setSearchQuery] = useState("");
+  // ... rest of state
+
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
@@ -129,20 +134,26 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
 
   const NavIcons = ({ isMobile = false }) => (
     <div
-      className={`flex items-center gap-5 md:gap-7 ${
-        isMobile
-          ? "justify-around w-full py-8 border-b border-gray-100 dark:border-gray-800"
-          : ""
-      }`}
+      className={`flex items-center gap-5 md:gap-7 ${isMobile
+        ? "justify-around w-full py-8 border-b border-gray-100 dark:border-gray-800"
+        : ""
+        }`}
     >
       <button
         onClick={() => {
-          navigate("/auth");
+          if (customer) {
+            navigate("/profile");
+          } else {
+            navigate("/auth");
+          }
           if (isMobile) setIsMenuOpen(false);
         }}
-        className="hover:text-primary transition-colors flex items-center"
+        className={`hover:text-primary transition-colors flex items-center ${customer ? 'text-primary' : ''}`}
+        title={customer ? "My Profile" : "Login / Register"}
       >
-        <span className="material-icons-outlined text-xl">person</span>
+        <span className="material-icons-outlined text-xl">
+          {customer ? "account_circle" : "person"}
+        </span>
       </button>
       <button
         onClick={toggleDarkMode}
@@ -266,9 +277,8 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
       className="flex items-center justify-end relative h-10"
     >
       <div
-        className={`flex items-center bg-gray-50 dark:bg-black/20 rounded-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden ${
-          isSearchOpen ? "w-48 md:w-64 px-4 opacity-100" : "w-0 px-0 opacity-0"
-        }`}
+        className={`flex items-center bg-gray-50 dark:bg-black/20 rounded-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden ${isSearchOpen ? "w-48 md:w-64 px-4 opacity-100" : "w-0 px-0 opacity-0"
+          }`}
       >
         <form onSubmit={handleSearchSubmit} className="w-full">
           <input
@@ -284,11 +294,10 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
       <button
         type="button"
         onClick={toggleSearch}
-        className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 z-10 ${
-          isSearchOpen
-            ? "text-primary"
-            : "text-text-main-light dark:text-text-main-dark hover:text-primary"
-        }`}
+        className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 z-10 ${isSearchOpen
+          ? "text-primary"
+          : "text-text-main-light dark:text-text-main-dark hover:text-primary"
+          }`}
       >
         <span className="material-icons-outlined text-xl">
           {isSearchOpen ? "close" : "search"}
@@ -357,22 +366,20 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
                   <button
                     type="button"
                     onClick={toggleSearch}
-                    className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 ${
-                      isSearchOpen
-                        ? "text-primary"
-                        : "text-text-main-light dark:text-text-main-dark hover:text-primary"
-                    }`}
+                    className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 ${isSearchOpen
+                      ? "text-primary"
+                      : "text-text-main-light dark:text-text-main-dark hover:text-primary"
+                      }`}
                   >
                     <span className="material-icons-outlined text-xl">
                       {isSearchOpen ? "close" : "search"}
                     </span>
                   </button>
                   <div
-                    className={`flex items-center bg-gray-50 dark:bg-black/20 rounded-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden ${
-                      isSearchOpen
-                        ? "w-64 px-4 opacity-100 ml-2"
-                        : "w-0 px-0 opacity-0"
-                    }`}
+                    className={`flex items-center bg-gray-50 dark:bg-black/20 rounded-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden ${isSearchOpen
+                      ? "w-64 px-4 opacity-100 ml-2"
+                      : "w-0 px-0 opacity-0"
+                      }`}
                   >
                     <form onSubmit={handleSearchSubmit} className="w-full">
                       <input
@@ -418,16 +425,14 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
       </div>
 
       <div
-        className={`fixed inset-0 bg-black/40 z-[200] transition-opacity duration-500 ${
-          isMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
+        className={`fixed inset-0 bg-black/40 z-[200] transition-opacity duration-500 ${isMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
         onClick={() => setIsMenuOpen(false)}
       >
         <div
           ref={menuRef}
-          className={`absolute top-0 left-0 h-full w-full md:w-[30%] bg-white dark:bg-background-dark shadow-[0_0_50px_rgba(0,0,0,0.1)] transition-transform duration-500 ease-in-out ${
-            isMenuOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+          className={`absolute top-0 left-0 h-full w-full md:w-[30%] bg-white dark:bg-background-dark shadow-[0_0_50px_rgba(0,0,0,0.1)] transition-transform duration-500 ease-in-out ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
           onClick={(e) => e.stopPropagation()}
         >
           <div className="p-10 flex flex-col h-full bg-white dark:bg-background-dark">

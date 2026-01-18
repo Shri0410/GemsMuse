@@ -14,6 +14,20 @@ import About from "./pages/About";
 import Profile from "./pages/Profile";
 import Wishlist from "./pages/Wishlist";
 
+// Dashboard Imports
+import { AuthProvider } from "./context/AuthContext";
+import { CustomerAuthProvider } from "./context/CustomerAuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import CustomerProtectedRoute from "./components/CustomerProtectedRoute";
+import DashboardLayout from "./layouts/DashboardLayout";
+import Login from "./pages/Login";
+import DashboardCollections from "./pages/dashboard/Collections";
+import DashboardProducts from "./pages/dashboard/Products";
+import ProductForm from "./pages/dashboard/ProductForm";
+import DashboardHome from "./pages/dashboard/Collections"; // Reuse Collections as home for now or create a simple one
+import FeaturedCollections from "./pages/dashboard/FeaturedCollections";
+import UserManagement from "./pages/dashboard/UserManagement";
+
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -51,11 +65,10 @@ const BackToTopButton = () => {
   return (
     <button
       onClick={scrollToTop}
-      className={`fixed bottom-28 right-8 z-[90] w-12 h-12 bg-white dark:bg-surface-dark text-primary border border-primary/20 rounded-full shadow-2xl flex items-center justify-center transition-all duration-500 transform ${
-        isVisible
-          ? "translate-y-0 opacity-100 scale-100"
-          : "translate-y-10 opacity-0 scale-50 pointer-events-none"
-      } hover:bg-primary hover:text-white group`}
+      className={`fixed bottom-28 right-8 z-[90] w-12 h-12 bg-white dark:bg-surface-dark text-primary border border-primary/20 rounded-full shadow-2xl flex items-center justify-center transition-all duration-500 transform ${isVisible
+        ? "translate-y-0 opacity-100 scale-100"
+        : "translate-y-10 opacity-0 scale-50 pointer-events-none"
+        } hover:bg-primary hover:text-white group`}
       aria-label="Back to top"
     >
       <span className="material-icons-outlined text-xl group-hover:animate-bounce">
@@ -78,33 +91,65 @@ const App = () => {
 
   const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
+  // Helper to allow existing routes to have Navbar/Footer
+  const MainLayout = ({ children }) => (
+    <div className="min-h-screen flex flex-col transition-colors duration-300">
+      <ScrollToTop />
+      <Navbar toggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode} />
+      <main className="flex-grow">
+        {children}
+      </main>
+      <Footer />
+      <BackToTopButton />
+    </div>
+  );
+
   return (
-    <HashRouter>
-      <div className="min-h-screen flex flex-col transition-colors duration-300">
-        <ScrollToTop />
-        <Navbar toggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode} />
-        <main className="flex-grow">
+    <AuthProvider>
+      <CustomerAuthProvider>
+        <HashRouter>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/collection" element={<Collection />} />
-            <Route
-              path="/collections/:collectionId"
-              element={<CollectionDetail />}
-            />
-            <Route path="/product/:id" element={<ProductDetails />} />
-            <Route path="/bespoke" element={<Bespoke />} />
-            <Route path="/repairs" element={<Repairs />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/wishlist" element={<Wishlist />} />
+            {/* Dashboard Routes (No Navbar/Footer) */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <DashboardLayout />
+              </ProtectedRoute>
+            }>
+              <Route index element={<DashboardCollections />} /> {/* Default to collections */}
+              <Route path="collections" element={<DashboardCollections />} />
+              <Route path="products" element={<DashboardProducts />} />
+              <Route path="products/new" element={<ProductForm />} />
+              <Route path="products/:id" element={<ProductForm />} />
+              <Route path="featured" element={<FeaturedCollections />} />
+              <Route path="users" element={<UserManagement />} />
+            </Route>
+
+            {/* Public Website Routes */}
+            <Route path="*" element={
+              <MainLayout>
+                <Routes>
+                  {/* Public Access Routes */}
+                  <Route path="/" element={<Home />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/auth" element={<Auth />} />
+
+                  {/* Restricted Access Routes (Customer Login Required) */}
+                  <Route path="/collection" element={<CustomerProtectedRoute><Collection /></CustomerProtectedRoute>} />
+                  <Route path="/collections/:collectionId" element={<CustomerProtectedRoute><CollectionDetail /></CustomerProtectedRoute>} />
+                  <Route path="/product/:id" element={<CustomerProtectedRoute><ProductDetails /></CustomerProtectedRoute>} />
+                  <Route path="/bespoke" element={<CustomerProtectedRoute><Bespoke /></CustomerProtectedRoute>} />
+                  <Route path="/repairs" element={<CustomerProtectedRoute><Repairs /></CustomerProtectedRoute>} />
+                  <Route path="/services" element={<CustomerProtectedRoute><Services /></CustomerProtectedRoute>} />
+                  <Route path="/profile" element={<CustomerProtectedRoute><Profile /></CustomerProtectedRoute>} />
+                  <Route path="/wishlist" element={<CustomerProtectedRoute><Wishlist /></CustomerProtectedRoute>} />
+                </Routes>
+              </MainLayout>
+            } />
           </Routes>
-        </main>
-        <Footer />
-        <BackToTopButton />
-      </div>
-    </HashRouter>
+        </HashRouter>
+      </CustomerAuthProvider>
+    </AuthProvider>
   );
 };
 

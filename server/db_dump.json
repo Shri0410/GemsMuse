@@ -1,0 +1,44 @@
+{
+  "collections": [
+    {
+      "id": 9,
+      "name": "The KOI Collection"
+    },
+    {
+      "id": 10,
+      "name": "COLOR ARC"
+    },
+    {
+      "id": 11,
+      "name": "MAA COLLECTION"
+    },
+    {
+      "id": 12,
+      "name": "CUDDLE KIDS"
+    },
+    {
+      "id": 13,
+      "name": "S-ORBIT"
+    },
+    {
+      "id": 14,
+      "name": "RUBY REDIANCE"
+    },
+    {
+      "id": 15,
+      "name": "AMORE"
+    }
+  ],
+  "products": [
+    {
+      "id": 5,
+      "name": "test",
+      "collection_id": 15
+    },
+    {
+      "id": 6,
+      "name": "adsf",
+      "collection_id": 9
+    }
+  ]
+}

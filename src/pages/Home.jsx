@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
-import { MOCK_PRODUCTS } from "../constants";
 import koi from "../assets/koi.jpg";
 import colorarc from "../assets/colorarc.jpg";
 import ruby from "../assets/ruby.jpg";
@@ -9,13 +8,30 @@ import sorbit from "../assets/s-orbit.JPG";
 const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const carouselItems = MOCK_PRODUCTS.slice(0, 8);
-  const totalItems = carouselItems.length;
+
+  // State for dynamic collections
+  const [carouselItems, setCarouselItems] = useState([]);
 
   // Calculate items to show based on window width
   const [itemsToShow, setItemsToShow] = useState(4);
 
   useEffect(() => {
+    // Fetch Featured Collections
+    const fetchFeatured = async () => {
+      try {
+        const res = await fetch('/api/collections');
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          // Filter only featured items for the carousel
+          const featured = data.filter(c => c.is_featured);
+          setCarouselItems(featured.length > 0 ? featured : data.slice(0, 8)); // Fallback to all if no featured
+        }
+      } catch (error) {
+        console.error('Failed to fetch collections', error);
+      }
+    };
+    fetchFeatured();
+
     const handleResize = () => {
       if (window.innerWidth < 640) setItemsToShow(1);
       else if (window.innerWidth < 1024) setItemsToShow(2);
@@ -27,7 +43,8 @@ const Home = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const maxIndex = totalItems - itemsToShow;
+  const totalItems = carouselItems.length;
+  const maxIndex = Math.max(0, totalItems - itemsToShow);
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
@@ -38,11 +55,11 @@ const Home = () => {
   };
 
   useEffect(() => {
-    if (!isPaused) {
+    if (!isPaused && totalItems > itemsToShow) {
       const interval = setInterval(nextSlide, 5000);
       return () => clearInterval(interval);
     }
-  }, [isPaused, nextSlide]);
+  }, [isPaused, nextSlide, totalItems, itemsToShow]);
 
   return (
     <div className="pt-0">
@@ -117,77 +134,87 @@ const Home = () => {
               <div
                 className="flex transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
                 style={{
-                  transform: `translateX(-${
-                    currentIndex * (100 / itemsToShow)
-                  }%)`,
+                  transform: `translateX(-${currentIndex * (100 / itemsToShow)}%)`,
                 }}
               >
-                {carouselItems.map((product) => (
-                  <div
-                    key={product.id}
-                    className="flex-shrink-0 px-4"
-                    style={{ width: `${100 / itemsToShow}%` }}
-                  >
-                    <Link
-                      to={`/product/${product.id}`}
-                      className="block group/item"
+                {carouselItems.length > 0 ? (
+                  carouselItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex-shrink-0 px-4"
+                      style={{ width: `${100 / itemsToShow}%` }}
                     >
-                      <div className="relative shimmer-container overflow-hidden bg-white dark:bg-surface-dark mb-6 aspect-square flex items-center justify-center px-5 py-0 transition-all duration-500 group-hover/item:shadow-2xl">
-                        <div className="shimmer-effect"></div>
-                        <img
-                          alt={product.name}
-                          className="w-full h-full object-contain transition-transform duration-700 group-hover/item:scale-110"
-                          src={product.image}
-                        />
-                      </div>
-                      <h3 className="text-lg font-serif mb-2 text-text-main-light dark:text-text-main-dark tracking-wide group-hover/item:text-primary transition-colors">
-                        {product.name}
-                      </h3>
-                      <p className="text-text-muted-light dark:text-text-muted-dark text-[10px] font-light leading-relaxed tracking-wider uppercase mb-1 line-clamp-1">
-                        {product.description}
-                      </p>
-                    </Link>
-                  </div>
-                ))}
+                      <Link
+                        to={`/collections/${item.id}`}
+                        className="block group/item"
+                      >
+                        <div className="relative shimmer-container overflow-hidden bg-white dark:bg-surface-dark mb-6 aspect-square flex items-center justify-center px-0 py-0 transition-all duration-500 group-hover/item:shadow-2xl">
+                          <div className="shimmer-effect"></div>
+                          {item.image_url ? (
+                            <img
+                              alt={item.name}
+                              className="w-full h-full object-cover transition-transform duration-700 group-hover/item:scale-110"
+                              src={`/${item.image_url}`}
+                            />
+                          ) : (
+                            <div className="text-gray-300">No Image</div>
+                          )}
+                        </div>
+                        <h3 className="text-lg font-serif mb-2 text-text-main-light dark:text-text-main-dark tracking-wide group-hover/item:text-primary transition-colors">
+                          {item.name}
+                        </h3>
+                        <p className="text-text-muted-light dark:text-text-muted-dark text-[10px] font-light leading-relaxed tracking-wider uppercase mb-1 line-clamp-1">
+                          {item.subtitle || item.description || 'Collection'}
+                        </p>
+                      </Link>
+                    </div>
+                  ))) : (
+                  <div className="flex w-full justify-center items-center py-10 text-gray-400">Loading collections...</div>
+                )}
               </div>
             </div>
 
             {/* Navigation Arrows */}
-            <button
-              onClick={prevSlide}
-              className="absolute top-1/3 -left-4 md:-left-8 -translate-y-1/2 w-12 h-12 bg-white dark:bg-surface-dark shadow-xl border border-gray-100 dark:border-gray-800 flex items-center justify-center text-text-main-light dark:text-text-main-dark hover:text-primary transition-all z-20 group/btn"
-              aria-label="Previous slide"
-            >
-              <span className="material-icons-outlined text-2xl group-hover/btn:-translate-x-1 transition-transform">
-                chevron_left
-              </span>
-            </button>
-            <button
-              onClick={nextSlide}
-              className="absolute top-1/3 -right-4 md:-right-8 -translate-y-1/2 w-12 h-12 bg-white dark:bg-surface-dark shadow-xl border border-gray-100 dark:border-gray-800 flex items-center justify-center text-text-main-light dark:text-text-main-dark hover:text-primary transition-all z-20 group/btn"
-              aria-label="Next slide"
-            >
-              <span className="material-icons-outlined text-2xl group-hover/btn:translate-x-1 transition-transform">
-                chevron_right
-              </span>
-            </button>
+            {maxIndex > 0 && (
+              <>
+                <button
+                  onClick={prevSlide}
+                  className="absolute top-1/3 -left-4 md:-left-8 -translate-y-1/2 w-12 h-12 bg-white dark:bg-surface-dark shadow-xl border border-gray-100 dark:border-gray-800 flex items-center justify-center text-text-main-light dark:text-text-main-dark hover:text-primary transition-all z-20 group/btn"
+                  aria-label="Previous slide"
+                >
+                  <span className="material-icons-outlined text-2xl group-hover/btn:-translate-x-1 transition-transform">
+                    chevron_left
+                  </span>
+                </button>
+                <button
+                  onClick={nextSlide}
+                  className="absolute top-1/3 -right-4 md:-right-8 -translate-y-1/2 w-12 h-12 bg-white dark:bg-surface-dark shadow-xl border border-gray-100 dark:border-gray-800 flex items-center justify-center text-text-main-light dark:text-text-main-dark hover:text-primary transition-all z-20 group/btn"
+                  aria-label="Next slide"
+                >
+                  <span className="material-icons-outlined text-2xl group-hover/btn:translate-x-1 transition-transform">
+                    chevron_right
+                  </span>
+                </button>
+              </>
+            )}
           </div>
 
           {/* Pagination Indicators */}
-          <div className="flex justify-center gap-3 mt-12">
-            {Array.from({ length: maxIndex + 1 }).map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentIndex(i)}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  currentIndex === i
+          {maxIndex > 0 && (
+            <div className="flex justify-center gap-3 mt-12">
+              {Array.from({ length: maxIndex + 1 }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentIndex(i)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${currentIndex === i
                     ? "bg-primary w-6"
                     : "bg-gray-300 dark:bg-gray-700"
-                }`}
-                aria-label={`Go to slide ${i + 1}`}
-              />
-            ))}
-          </div>
+                    }`}
+                  aria-label={`Go to slide ${i + 1}`}
+                />
+              ))}
+            </div>
+          )}
 
           <div className="text-center mt-16">
             <Link
