@@ -13,6 +13,7 @@ import Auth from "./pages/Auth";
 import About from "./pages/About";
 import Profile from "./pages/Profile";
 import Wishlist from "./pages/Wishlist";
+import AllProducts from "./pages/AllProducts";
 
 // Dashboard Imports
 import { AuthProvider } from "./context/AuthContext";
@@ -27,6 +28,7 @@ import ProductForm from "./pages/dashboard/ProductForm";
 import DashboardHome from "./pages/dashboard/Collections"; // Reuse Collections as home for now or create a simple one
 import FeaturedCollections from "./pages/dashboard/FeaturedCollections";
 import UserManagement from "./pages/dashboard/UserManagement";
+import ManageAttributes from "./pages/dashboard/ManageAttributes";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -123,6 +125,7 @@ const App = () => {
               <Route path="products/:id" element={<ProductForm />} />
               <Route path="featured" element={<FeaturedCollections />} />
               <Route path="users" element={<UserManagement />} />
+              <Route path="attributes" element={<ManageAttributes />} />
             </Route>
 
             {/* Public Website Routes */}
@@ -136,6 +139,7 @@ const App = () => {
 
                   {/* Restricted Access Routes (Customer Login Required) */}
                   <Route path="/collection" element={<CustomerProtectedRoute><Collection /></CustomerProtectedRoute>} />
+                  <Route path="/all-products" element={<CustomerProtectedRoute><AllProducts /></CustomerProtectedRoute>} />
                   <Route path="/collections/:collectionId" element={<CustomerProtectedRoute><CollectionDetail /></CustomerProtectedRoute>} />
                   <Route path="/product/:id" element={<CustomerProtectedRoute><ProductDetails /></CustomerProtectedRoute>} />
                   <Route path="/bespoke" element={<CustomerProtectedRoute><Bespoke /></CustomerProtectedRoute>} />

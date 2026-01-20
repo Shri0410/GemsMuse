@@ -463,6 +463,13 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
                 Products
               </Link>
               <Link
+                to="/all-products"
+                onClick={() => setIsMenuOpen(false)}
+                className="text-2xl font-serif text-text-main-light dark:text-text-main-dark hover:text-primary transition-all hover:pl-2"
+              >
+                All Products
+              </Link>
+              <Link
                 to="/about"
                 onClick={() => setIsMenuOpen(false)}
                 className="text-2xl font-serif text-text-main-light dark:text-text-main-dark hover:text-primary transition-all hover:pl-2"

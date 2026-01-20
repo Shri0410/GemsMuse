@@ -19,15 +19,15 @@ const Home = () => {
     // Fetch Featured Collections
     const fetchFeatured = async () => {
       try {
-        const res = await fetch('/api/collections');
+        const res = await fetch("/api/collections");
         const data = await res.json();
         if (Array.isArray(data)) {
           // Filter only featured items for the carousel
-          const featured = data.filter(c => c.is_featured);
+          const featured = data.filter((c) => c.is_featured);
           setCarouselItems(featured.length > 0 ? featured : data.slice(0, 8)); // Fallback to all if no featured
         }
       } catch (error) {
-        console.error('Failed to fetch collections', error);
+        console.error("Failed to fetch collections", error);
       }
     };
     fetchFeatured();
@@ -164,12 +164,15 @@ const Home = () => {
                           {item.name}
                         </h3>
                         <p className="text-text-muted-light dark:text-text-muted-dark text-[10px] font-light leading-relaxed tracking-wider uppercase mb-1 line-clamp-1">
-                          {item.subtitle || item.description || 'Collection'}
+                          {item.subtitle || item.description || "Collection"}
                         </p>
                       </Link>
                     </div>
-                  ))) : (
-                  <div className="flex w-full justify-center items-center py-10 text-gray-400">Loading collections...</div>
+                  ))
+                ) : (
+                  <div className="flex w-full justify-center items-center py-10 text-gray-400">
+                    Loading collections...
+                  </div>
                 )}
               </div>
             </div>
@@ -219,7 +222,7 @@ const Home = () => {
           <div className="text-center mt-16">
             <Link
               to="/collection"
-              className="inline-block bg-white hover:bg-primary hover:text-white text-text-main-light dark:text-text-main-dark border border-gray-200 dark:border-gray-800 px-12 py-4 text-[10px] uppercase tracking-[0.3em] font-bold transition-all duration-500 shadow-sm"
+              className="inline-block bg-white hover:bg-primary hover:text-white text-text-main-light dark:text-text-main-dark dark:bg-transparent dark:hover:bg-primary border border-gray-200 dark:border-light px-12 py-4 text-[10px] uppercase tracking-[0.3em] font-bold transition-all duration-500 shadow-sm"
             >
               View All Products
             </Link>
@@ -276,13 +279,13 @@ const Home = () => {
               <div className="flex flex-wrap gap-4 pt-4">
                 <Link
                   to="/collection"
-                  className="bg-white hover:bg-primary hover:text-white text-text-main-light dark:text-text-main-dark border border-gray-200 dark:border-gray-800 px-10 py-3.5 text-[10px] uppercase tracking-[0.2em] font-bold transition-all duration-300"
+                  className="bg-white hover:bg-primary hover:text-white text-text-main-light dark:text-text-main-dark dark:bg-transparent dark:hover:bg-primary border border-gray-200 dark:border-light px-10 py-3.5 text-[10px] uppercase tracking-[0.2em] font-bold transition-all duration-300"
                 >
                   View Collection
                 </Link>
                 <Link
                   to="/bespoke"
-                  className="bg-white hover:bg-primary hover:text-white text-text-main-light dark:text-text-main-dark border border-gray-200 dark:border-gray-800 px-10 py-3.5 text-[10px] uppercase tracking-[0.2em] font-bold transition-all duration-300"
+                  className="bg-white hover:bg-primary hover:text-white text-text-main-light dark:text-text-main-dark dark:bg-transparent dark:hover:bg-primary border border-gray-200 dark:border-light px-10 py-3.5 text-[10px] uppercase tracking-[0.2em] font-bold transition-all duration-300"
                 >
                   Book Consultation
                 </Link>
@@ -350,7 +353,7 @@ const Home = () => {
               <div className="pt-6">
                 <Link
                   to="/collection"
-                  className="bg-white hover:bg-primary hover:text-white text-text-main-light dark:text-text-main-dark border border-gray-200 dark:border-gray-800 px-12 py-4 text-[10px] uppercase tracking-[0.3em] font-bold transition-all duration-300"
+                  className="bg-white hover:bg-primary hover:text-white text-text-main-light dark:text-text-main-dark dark:bg-transparent dark:hover:bg-primary border border-gray-200 dark:border-light px-12 py-4 text-[10px] uppercase tracking-[0.3em] font-bold transition-all duration-300"
                 >
                   Explore Collection
                 </Link>
@@ -492,7 +495,7 @@ const Home = () => {
             </Link>
             <Link
               to="/collection"
-              className="bg-white hover:bg-gray-50 text-text-main-light dark:text-text-main-dark border border-gray-200 dark:border-gray-800 px-12 py-4 text-[10px] uppercase tracking-[0.3em] font-bold transition-all duration-500"
+              className="bg-white hover:bg-gray-50 text-text-main-light dark:text-text-main-dark dark:bg-transparent dark:hover:bg-primary border border-gray-200 dark:border-light px-12 py-4 text-[10px] uppercase tracking-[0.3em] font-bold transition-all duration-500"
             >
               View All Collections
             </Link>

@@ -17,10 +17,13 @@ import customerAuthRoutes from './routes/customerAuth.js';
 import collectionRoutes from './routes/collections.js';
 import productRoutes from './routes/products.js';
 
+import attributeRoutes from './routes/attributes.js';
+
 app.use('/api/auth', authRoutes); // Dashboard Admin Auth
 app.use('/api/customer-auth', customerAuthRoutes); // Website Customer Auth
 app.use('/api/collections', collectionRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/attributes', attributeRoutes);
 
 // Test route
 app.get('/', (req, res) => {

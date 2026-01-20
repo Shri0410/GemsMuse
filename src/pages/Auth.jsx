@@ -4,15 +4,19 @@ import { useCustomerAuth } from "../context/CustomerAuthContext";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ fullName: '', email: '', password: '' });
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+  });
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState({ type: '', text: '' });
+  const [message, setMessage] = useState({ type: "", text: "" });
   const navigate = useNavigate();
   const { customer, login, loading: authLoading } = useCustomerAuth();
 
   useEffect(() => {
     if (!authLoading && customer) {
-      navigate('/profile');
+      navigate("/profile");
     }
   }, [customer, authLoading, navigate]);
 
@@ -23,21 +27,23 @@ const Auth = () => {
   const handleAuth = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage({ type: '', text: '' });
+    setMessage({ type: "", text: "" });
 
-    const endpoint = isLogin ? '/api/customer-auth/login' : '/api/customer-auth/register';
+    const endpoint = isLogin
+      ? "/api/customer-auth/login"
+      : "/api/customer-auth/register";
 
     try {
       const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || 'Authentication failed');
+        throw new Error(data.message || "Authentication failed");
       }
 
       if (isLogin) {
@@ -47,12 +53,12 @@ const Auth = () => {
         navigate("/profile");
       } else {
         // Register Success
-        setMessage({ type: 'success', text: data.message });
+        setMessage({ type: "success", text: data.message });
         setIsLogin(true); // Switch to login view
-        setFormData({ fullName: '', email: '', password: '' });
+        setFormData({ fullName: "", email: "", password: "" });
       }
     } catch (error) {
-      setMessage({ type: 'error', text: error.message });
+      setMessage({ type: "error", text: error.message });
     } finally {
       setLoading(false);
     }
@@ -81,7 +87,9 @@ const Auth = () => {
           </div>
 
           {message.text && (
-            <div className={`mb-6 p-3 text-center text-xs font-bold uppercase tracking-wider rounded ${message.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+            <div
+              className={`mb-6 p-3 text-center text-xs font-bold uppercase tracking-wider rounded ${message.type === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
+            >
               {message.text}
             </div>
           )}
@@ -112,7 +120,7 @@ const Auth = () => {
             )}
             <div className="space-y-2">
               <label className="text-[10px] uppercase tracking-widest text-text-muted-light ml-1 font-bold">
-                Email or Username
+                Email
               </label>
               <div className="relative group">
                 <span className="absolute left-0 bottom-2.5 text-text-muted-light group-focus-within:text-primary transition-colors">
@@ -157,7 +165,7 @@ const Auth = () => {
               className="w-full bg-primary hover:bg-primary-hover text-white py-4 mt-2 uppercase text-xs font-bold tracking-[0.2em] shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
               type="submit"
             >
-              {loading ? "Processing..." : (isLogin ? "Login" : "Create Account")}
+              {loading ? "Processing..." : isLogin ? "Login" : "Create Account"}
             </button>
           </form>
           <div className="mt-10 pt-6 border-t border-gray-100 dark:border-gray-800 text-center">

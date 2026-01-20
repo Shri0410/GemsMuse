@@ -9,6 +9,7 @@ const ProductForm = () => {
     const isEditMode = Boolean(id);
 
     const [collections, setCollections] = useState([]);
+    const [attributes, setAttributes] = useState({ metal_type: [], metal_purity: [], metal_color: [] });
     const [loading, setLoading] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -17,9 +18,9 @@ const ProductForm = () => {
         product_type: '',
         set_name: '',
         name: '',
-        metal_type: 'Gold',
-        metal_purity: '18K',
-        metal_color: 'Yellow',
+        metal_type: '',
+        metal_purity: '',
+        metal_color: '',
         metal_weight: '',
         gem_stones: '',
         center_stone_weight: '',
@@ -44,6 +45,26 @@ const ProductForm = () => {
         };
         fetchCollections();
 
+        // Fetch Attributes for dropdowns
+        const fetchAttributes = async () => {
+            try {
+                const res = await fetch('/api/attributes');
+                const data = await res.json();
+                setAttributes(data);
+
+                // Set default values if not in edit mode
+                if (!isEditMode) {
+                    setFormData(prev => ({
+                        ...prev,
+                        metal_type: data.metal_type?.[0]?.value || '',
+                        metal_purity: data.metal_purity?.[0]?.value || '',
+                        metal_color: data.metal_color?.[0]?.value || ''
+                    }));
+                }
+            } catch (err) { console.error(err); }
+        };
+        fetchAttributes();
+
         // If Edit Mode, Fetch Product Details
         if (isEditMode) {
             const fetchProduct = async () => {
@@ -59,9 +80,9 @@ const ProductForm = () => {
                         product_type: data.product_type || '',
                         set_name: data.set_name || '',
                         name: data.name || '',
-                        metal_type: data.metal_type || 'Gold',
-                        metal_purity: data.metal_purity || '18K',
-                        metal_color: data.metal_color || 'Yellow',
+                        metal_type: data.metal_type || '',
+                        metal_purity: data.metal_purity || '',
+                        metal_color: data.metal_color || '',
                         metal_weight: data.metal_weight || '',
                         gem_stones: data.gem_stones || '',
                         center_stone_weight: data.center_stone_weight || '',
@@ -182,22 +203,22 @@ const ProductForm = () => {
                             <div>
                                 <label className="block text-xs text-gray-500 mb-1">Metal Type</label>
                                 <select name="metal_type" value={formData.metal_type} onChange={handleChange} className="input-luxury">
-                                    <option value="Gold">Gold</option>
-                                    <option value="Silver">Silver</option>
-                                    <option value="Platinum">Platinum</option>
-                                    <option value="Stainless Steel">Stainless Steel</option>
+                                    <option value="">Select Type</option>
+                                    {attributes.metal_type?.map(a => <option key={a.id} value={a.value}>{a.value}</option>)}
                                 </select>
                             </div>
                             <div>
                                 <label className="block text-xs text-gray-500 mb-1">Purity</label>
-                                <input type="text" name="metal_purity" value={formData.metal_purity} onChange={handleChange} placeholder="18K" className="input-luxury" />
+                                <select name="metal_purity" value={formData.metal_purity} onChange={handleChange} className="input-luxury">
+                                    <option value="">Select Purity</option>
+                                    {attributes.metal_purity?.map(a => <option key={a.id} value={a.value}>{a.value}</option>)}
+                                </select>
                             </div>
                             <div>
                                 <label className="block text-xs text-gray-500 mb-1">Color</label>
                                 <select name="metal_color" value={formData.metal_color} onChange={handleChange} className="input-luxury">
-                                    <option value="Yellow">Yellow</option>
-                                    <option value="White">White</option>
-                                    <option value="Rose">Rose</option>
+                                    <option value="">Select Color</option>
+                                    {attributes.metal_color?.map(a => <option key={a.id} value={a.value}>{a.value}</option>)}
                                 </select>
                             </div>
                             <div>

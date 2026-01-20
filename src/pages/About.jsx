@@ -189,7 +189,7 @@ const About = () => {
               <div className="relative group overflow-hidden">
                 <img
                   alt="Alexander Sterling"
-                  className="w-full h-[600px] object-cover filter grayscale-[10%] group-hover:grayscale-0 transition-all duration-700"
+                  className="w-full h-[600px] object-cover transition-all duration-700"
                   src={shashi}
                 />
                 <div className="absolute bottom-5 left-1 right-6 bg-white dark:bg-surface-dark p-6 shadow-xl transform translate-y-4 opacity-90 group-hover:translate-y-0 transition-all border-l-4 border-primary">

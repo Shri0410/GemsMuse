@@ -8,15 +8,15 @@ const Collection = () => {
   useEffect(() => {
     const fetchCollections = async () => {
       try {
-        const response = await fetch('/api/collections');
+        const response = await fetch("/api/collections");
         if (response.ok) {
           const data = await response.json();
           setCollections(data);
         } else {
-          console.error('Failed to fetch collections');
+          console.error("Failed to fetch collections");
         }
       } catch (error) {
-        console.error('Error fetching collections:', error);
+        console.error("Error fetching collections:", error);
       } finally {
         setLoading(false);
       }
@@ -94,7 +94,7 @@ const Collection = () => {
                     </h3>
                     <div className="inline-block border-b border-primary/20 pb-1 group-hover:border-primary transition-all">
                       <span className="text-[10px] uppercase tracking-[0.3em] font-bold">
-                        Discover the Narrative
+                        Discover the Collection
                       </span>
                     </div>
                   </div>
