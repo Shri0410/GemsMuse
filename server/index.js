@@ -38,6 +38,29 @@ app.get('/db-check', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+const startServer = async () => {
+    try {
+        // Verify Database Connection
+        await pool.query('SELECT 1');
+        console.log('Database Connected Successfully');
+
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+        });
+    } catch (error) {
+        console.error('Failed to start server:', error);
+        process.exit(1);
+    }
+};
+
+startServer();
+
+// Global Error Handlers
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+    // Keep server running if possible, or exit gracefully
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
