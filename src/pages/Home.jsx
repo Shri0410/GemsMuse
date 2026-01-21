@@ -4,6 +4,7 @@ import koi from "../assets/koi.jpg";
 import colorarc from "../assets/colorarc.jpg";
 import ruby from "../assets/ruby.jpg";
 import sorbit from "../assets/s-orbit.JPG";
+import SEO from "../components/SEO";
 
 const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -61,8 +62,11 @@ const Home = () => {
     }
   }, [isPaused, nextSlide, totalItems, itemsToShow]);
 
+
+
   return (
     <div className="pt-0">
+      <SEO />
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center bg-black overflow-hidden">
         <div className="absolute inset-0 z-0">

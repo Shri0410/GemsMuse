@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCustomerAuth } from "../context/CustomerAuthContext";
+import { useShop } from "../context/ShopContext";
 import Wishlist from "./Wishlist"; // Re-using Wishlist component logic if possible, or just linking.
 // Actually, Wishlist component is a full page. I can just render it if active tab, or link to it.
 // User checking profile might want to see it here. Let's try to render content based on active tab.
 
 const Profile = () => {
   const { customer, logout } = useCustomerAuth();
+  const { bagItems, removeFromBag, subtotal, checkout } = useShop();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("dashboard");
 
@@ -57,8 +59,8 @@ const Profile = () => {
               key={tab}
               onClick={() => setActiveTab(tab.toLowerCase())}
               className={`pb-4 text-xs uppercase tracking-[0.2em] font-bold transition-all ${activeTab === tab.toLowerCase()
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-text-muted-light hover:text-text-main-light dark:hover:text-text-main-dark'
+                ? 'text-primary border-b-2 border-primary'
+                : 'text-text-muted-light hover:text-text-main-light dark:hover:text-text-main-dark'
                 }`}
             >
               {tab}
@@ -108,17 +110,66 @@ const Profile = () => {
 
           {activeTab === 'bag' && (
             <div className="animate-fade-in">
-              <div className="bg-white dark:bg-surface-dark p-12 text-center border dashed border-gray-200 dark:border-gray-800">
-                <h3 className="text-2xl font-serif mb-4">Shopping Bag</h3>
-                <p className="text-text-muted-light mb-8">Review your selection before acquiring.</p>
-                {/* In a real app, we would duplicate the Bag UI here or make it a component */}
-                <button
-                  onClick={() => { /* Trigger Bag Drawer if possible, or just show empty state */ }}
-                  className="bg-black dark:bg-white text-white dark:text-black px-8 py-3 text-[10px] uppercase tracking-widest font-bold"
-                >
-                  View Bag in Navbar
-                </button>
-              </div>
+              {bagItems.length > 0 ? (
+                <div className="bg-white dark:bg-surface-dark p-8 shadow-sm border border-gray-50 dark:border-gray-800">
+                  <h3 className="text-2xl font-serif mb-8">Shopping Bag</h3>
+                  <div className="space-y-8">
+                    {bagItems.map((item) => (
+                      <div key={item.id} className="flex flex-col sm:flex-row gap-6 border-b border-gray-100 dark:border-gray-800 pb-8 last:border-0 last:pb-0">
+                        <div className="w-24 h-24 bg-gray-50 dark:bg-black/20 flex-shrink-0 p-2">
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                        <div className="flex-grow">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h4 className="text-lg font-serif font-bold hover:text-primary transition-colors cursor-pointer" onClick={() => navigate(`/product/${item.id}`)}>
+                                {item.name}
+                              </h4>
+                              <p className="text-xs text-text-muted-light mt-1">{item.collection_name || "Exclusive Collection"}</p>
+                            </div>
+                            <button
+                              onClick={() => removeFromBag(item.id)}
+                              className="text-text-muted-light hover:text-red-500 transition-colors"
+                              title="Remove"
+                            >
+                              <span className="material-icons-outlined">delete_outline</span>
+                            </button>
+                          </div>
+                          <div className="flex justify-between items-end mt-4">
+                            <div className="text-xs uppercase tracking-widest font-bold">
+                              Quantity: {item.quantity}
+                            </div>
+                            <div className="text-sm font-bold">
+                              ${(item.price || 0).toLocaleString()}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-8 pt-8 border-t border-gray-100 dark:border-gray-800 flex flex-col items-end gap-4">
+
+                    <button
+                      onClick={checkout}
+                      className="bg-primary hover:bg-primary-hover text-white px-10 py-4 text-[11px] uppercase tracking-[0.3em] font-bold transition-all shadow-xl hover:-translate-y-0.5 active:translate-y-0">
+                      Proceed to Checkout
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-white dark:bg-surface-dark p-12 text-center border dashed border-gray-200 dark:border-gray-800">
+                  <h3 className="text-2xl font-serif mb-4">Your Bag is Empty</h3>
+                  <p className="text-text-muted-light mb-8">Discover our masterpiece collection today.</p>
+                  <Link to="/collection" className="bg-primary text-white px-8 py-3 text-[10px] uppercase tracking-widest font-bold">
+                    Cleanse Your Palate & Shop
+                  </Link>
+                </div>
+              )}
             </div>
           )}
         </div>

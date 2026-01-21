@@ -3,10 +3,17 @@ import { Link } from "react-router-dom";
 import crafting from "../assets/ouressence/crafting.jpeg";
 import shashi from "../assets/ouressence/SHASHI.jpg";
 import ranju from "../assets/ouressence/Ranju.jpeg";
+import SEO from "../components/SEO";
+
+
 
 const About = () => {
   return (
     <div className="pt-20 bg-background-light dark:bg-background-dark">
+      <SEO
+        title="About Us"
+        description="The story of Gems Muse - A journey through time, artistry, and the unwavering pursuit of perfection."
+      />
       {/* Hero Section */}
       <section className="relative h-screen min-h-[700px] flex items-center justify-center bg-black overflow-hidden">
         <div className="absolute inset-0 z-0">

@@ -13,11 +13,13 @@ import Auth from "./pages/Auth";
 import About from "./pages/About";
 import Profile from "./pages/Profile";
 import Wishlist from "./pages/Wishlist";
+import Bag from "./pages/Bag";
 import AllProducts from "./pages/AllProducts";
 
 // Dashboard Imports
 import { AuthProvider } from "./context/AuthContext";
 import { CustomerAuthProvider } from "./context/CustomerAuthContext";
+import { ShopProvider } from "./context/ShopContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CustomerProtectedRoute from "./components/CustomerProtectedRoute";
 import DashboardLayout from "./layouts/DashboardLayout";
@@ -109,49 +111,52 @@ const App = () => {
   return (
     <AuthProvider>
       <CustomerAuthProvider>
-        <HashRouter>
-          <Routes>
-            {/* Dashboard Routes (No Navbar/Footer) */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <DashboardLayout />
-              </ProtectedRoute>
-            }>
-              <Route index element={<DashboardCollections />} /> {/* Default to collections */}
-              <Route path="collections" element={<DashboardCollections />} />
-              <Route path="products" element={<DashboardProducts />} />
-              <Route path="products/new" element={<ProductForm />} />
-              <Route path="products/:id" element={<ProductForm />} />
-              <Route path="featured" element={<FeaturedCollections />} />
-              <Route path="users" element={<UserManagement />} />
-              <Route path="attributes" element={<ManageAttributes />} />
-            </Route>
+        <ShopProvider>
+          <HashRouter>
+            <Routes>
+              {/* Dashboard Routes (No Navbar/Footer) */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <DashboardLayout />
+                </ProtectedRoute>
+              }>
+                <Route index element={<DashboardCollections />} /> {/* Default to collections */}
+                <Route path="collections" element={<DashboardCollections />} />
+                <Route path="products" element={<DashboardProducts />} />
+                <Route path="products/new" element={<ProductForm />} />
+                <Route path="products/:id" element={<ProductForm />} />
+                <Route path="featured" element={<FeaturedCollections />} />
+                <Route path="users" element={<UserManagement />} />
+                <Route path="attributes" element={<ManageAttributes />} />
+              </Route>
 
-            {/* Public Website Routes */}
-            <Route path="*" element={
-              <MainLayout>
-                <Routes>
-                  {/* Public Access Routes */}
-                  <Route path="/" element={<Home />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/auth" element={<Auth />} />
+              {/* Public Website Routes */}
+              <Route path="*" element={
+                <MainLayout>
+                  <Routes>
+                    {/* Public Access Routes */}
+                    <Route path="/" element={<Home />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/auth" element={<Auth />} />
 
-                  {/* Restricted Access Routes (Customer Login Required) */}
-                  <Route path="/collection" element={<CustomerProtectedRoute><Collection /></CustomerProtectedRoute>} />
-                  <Route path="/all-products" element={<CustomerProtectedRoute><AllProducts /></CustomerProtectedRoute>} />
-                  <Route path="/collections/:collectionId" element={<CustomerProtectedRoute><CollectionDetail /></CustomerProtectedRoute>} />
-                  <Route path="/product/:id" element={<CustomerProtectedRoute><ProductDetails /></CustomerProtectedRoute>} />
-                  <Route path="/bespoke" element={<CustomerProtectedRoute><Bespoke /></CustomerProtectedRoute>} />
-                  <Route path="/repairs" element={<CustomerProtectedRoute><Repairs /></CustomerProtectedRoute>} />
-                  <Route path="/services" element={<CustomerProtectedRoute><Services /></CustomerProtectedRoute>} />
-                  <Route path="/profile" element={<CustomerProtectedRoute><Profile /></CustomerProtectedRoute>} />
-                  <Route path="/wishlist" element={<CustomerProtectedRoute><Wishlist /></CustomerProtectedRoute>} />
-                </Routes>
-              </MainLayout>
-            } />
-          </Routes>
-        </HashRouter>
+                    {/* Restricted Access Routes (Customer Login Required) */}
+                    <Route path="/collection" element={<CustomerProtectedRoute><Collection /></CustomerProtectedRoute>} />
+                    <Route path="/all-products" element={<CustomerProtectedRoute><AllProducts /></CustomerProtectedRoute>} />
+                    <Route path="/collections/:collectionId" element={<CustomerProtectedRoute><CollectionDetail /></CustomerProtectedRoute>} />
+                    <Route path="/product/:id" element={<CustomerProtectedRoute><ProductDetails /></CustomerProtectedRoute>} />
+                    <Route path="/bespoke" element={<CustomerProtectedRoute><Bespoke /></CustomerProtectedRoute>} />
+                    <Route path="/repairs" element={<CustomerProtectedRoute><Repairs /></CustomerProtectedRoute>} />
+                    <Route path="/services" element={<CustomerProtectedRoute><Services /></CustomerProtectedRoute>} />
+                    <Route path="/profile" element={<CustomerProtectedRoute><Profile /></CustomerProtectedRoute>} />
+                    <Route path="/wishlist" element={<CustomerProtectedRoute><Wishlist /></CustomerProtectedRoute>} />
+                    <Route path="/bag" element={<CustomerProtectedRoute><Bag /></CustomerProtectedRoute>} />
+                  </Routes>
+                </MainLayout>
+              } />
+            </Routes>
+          </HashRouter>
+        </ShopProvider>
       </CustomerAuthProvider>
     </AuthProvider>
   );

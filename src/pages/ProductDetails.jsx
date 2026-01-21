@@ -1,13 +1,14 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MOCK_PRODUCTS } from "../constants";
+import SEO from "../components/SEO";
+import { useShop } from "../context/ShopContext";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const [activeMedia, setActiveMedia] = useState("photo");
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [isLiked, setIsLiked] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
 
@@ -57,48 +58,60 @@ const ProductDetails = () => {
     }
   }, [id]);
 
-  useEffect(() => {
-    const wishlist = JSON.parse(
-      localStorage.getItem("gems_muse_wishlist") || "[]",
-    );
-    if (id && wishlist.includes(id)) {
-      setIsLiked(true);
-    }
-  }, [id]);
+  const { addToBag: addItemToBag, toggleWishlist, isWishlisted } = useShop();
+  const isLiked = isWishlisted(id);
 
-  const toggleWishlist = () => {
-    const wishlist = JSON.parse(
-      localStorage.getItem("gems_muse_wishlist") || "[]",
-    );
-    let updatedWishlist;
-    if (isLiked) {
-      updatedWishlist = wishlist.filter((item) => item !== id);
-      setIsLiked(false);
-    } else {
-      updatedWishlist = [...wishlist, id];
-      setIsLiked(true);
+  const handleToggleWishlist = () => {
+
+    // Normalize logic duplicated for safekeeping
+    let imageUrl = null;
+    if (product.main_image) {
+      imageUrl = `/${product.main_image}`;
+    } else if (product.image) {
+      imageUrl = `/${product.image}`;
+    } else if (product.media && Array.isArray(product.media)) {
+      const foundImage = product.media.find(m => m.media_type === 'image');
+      if (foundImage) imageUrl = `/${foundImage.url}`;
+    }
+
+    const productInfo = {
+      ...product,
+      image: imageUrl || "https://via.placeholder.com/150"
+    };
+
+    const added = toggleWishlist(id, productInfo);
+    if (added) {
       setToastMessage("Added to your wishlist");
       setShowToast(true);
       setTimeout(() => setShowToast(false), 3000);
     }
-    localStorage.setItem("gems_muse_wishlist", JSON.stringify(updatedWishlist));
-    window.dispatchEvent(new Event("wishlist-updated"));
   };
+
 
   const addToBag = () => {
     if (!id) return;
-    const bag = JSON.parse(localStorage.getItem("gems_muse_bag") || "[]");
-    const existingIndex = bag.findIndex((item) => item.id === id);
-    if (existingIndex > -1) {
-      bag[existingIndex].quantity += quantity;
-    } else {
-      bag.push({ id, quantity });
+
+    // Normalize product info for the context cache
+    let imageUrl = null;
+    if (product.main_image) {
+      imageUrl = `/${product.main_image}`;
+    } else if (product.image) {
+      imageUrl = `/${product.image}`;
+    } else if (product.media && Array.isArray(product.media)) {
+      const foundImage = product.media.find(m => m.media_type === 'image');
+      if (foundImage) imageUrl = `/${foundImage.url}`;
     }
-    localStorage.setItem("gems_muse_bag", JSON.stringify(bag));
+
+    const productInfo = {
+      ...product,
+      image: imageUrl || "https://via.placeholder.com/150"
+    };
+
+    addItemToBag(id, quantity, productInfo);
+
     setToastMessage(`Added ${quantity} item(s) to bag`);
     setShowToast(true);
     setTimeout(() => setShowToast(false), 3000);
-    window.dispatchEvent(new Event("bag-updated"));
   };
 
   if (loading) {
@@ -127,8 +140,8 @@ const ProductDetails = () => {
   // Assuming backend returns product.media array from the join
   const photos = product.media
     ? product.media
-        .filter((m) => m.media_type === "image")
-        .map((m) => `/${m.url}`)
+      .filter((m) => m.media_type === "image")
+      .map((m) => `/${m.url}`)
     : [];
 
   // If no specific media, try legacy image_url or placeholder
@@ -144,8 +157,15 @@ const ProductDetails = () => {
     ? product.media.find((m) => m.media_type === "video")?.url
     : null; // Assuming url needs / prefix if local, or is absolute logic
 
+
+
   return (
     <div className="pt-24 bg-white dark:bg-background-dark min-h-screen relative">
+      <SEO
+        title={product.name}
+        description={product.description}
+        image={product.main_image ? `/${product.main_image}` : (product.image ? `/${product.image}` : undefined)}
+      />
       {/* Feedback Toast */}
       {showToast && (
         <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 z-[200] animate-fade-in-up">
@@ -204,7 +224,7 @@ const ProductDetails = () => {
                 )}
 
                 <button
-                  onClick={toggleWishlist}
+                  onClick={handleToggleWishlist}
                   className={`absolute top-6 right-6 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 shadow-md ${isLiked ? "bg-primary text-white" : "bg-white/90 dark:bg-black/80 text-text-main-light dark:text-text-main-dark"}`}
                 >
                   <span className="material-icons-outlined text-lg">
@@ -436,7 +456,7 @@ const ProductDetails = () => {
                       p.main_image
                         ? `/${p.main_image}`
                         : p.image ||
-                          "https://via.placeholder.com/300x300?text=No+Image"
+                        "https://via.placeholder.com/300x300?text=No+Image"
                     }
                   />
                 </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import SEO from "../components/SEO";
 
 const CollectionDetail = () => {
   const { collectionId } = useParams();
@@ -53,8 +54,15 @@ const CollectionDetail = () => {
     );
   }
 
+
+
   return (
     <div className="pt-0 bg-background-light dark:bg-background-dark min-h-screen">
+      <SEO
+        title={collection.name}
+        description={collection.description}
+        image={collection.image_url ? `/${collection.image_url}` : undefined}
+      />
       {/* Immersive Hero */}
       <section className="relative h-[85vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">

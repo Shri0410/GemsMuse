@@ -4,10 +4,12 @@ import { MOCK_PRODUCTS } from "../constants";
 import logo from "../assets/logo.png";
 
 import { useCustomerAuth } from "../context/CustomerAuthContext";
+import { useShop } from "../context/ShopContext";
 
 const Navbar = ({ toggleDarkMode, isDarkMode }) => {
   const navigate = useNavigate();
   const { customer } = useCustomerAuth();
+  const { bag, bagItems, removeFromBag, subtotal, checkout, wishlist, bagCount } = useShop();
   const [searchQuery, setSearchQuery] = useState("");
   // ... rest of state
 
@@ -15,34 +17,12 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [wishlistCount, setWishlistCount] = useState(0);
-  const [bag, setBag] = useState([]);
-  const [showBagDropdown, setShowBagDropdown] = useState(false);
 
   const searchRef = useRef(null);
   const searchInputRef = useRef(null);
-  const bagRef = useRef(null);
   const menuRef = useRef(null);
 
-  const updateCounts = () => {
-    const wishlist = JSON.parse(
-      localStorage.getItem("gems_muse_wishlist") || "[]"
-    );
-    setWishlistCount(wishlist.length);
-
-    const savedBag = JSON.parse(localStorage.getItem("gems_muse_bag") || "[]");
-    setBag(savedBag);
-  };
-
-  useEffect(() => {
-    updateCounts();
-    window.addEventListener("wishlist-updated", updateCounts);
-    window.addEventListener("bag-updated", updateCounts);
-    return () => {
-      window.removeEventListener("wishlist-updated", updateCounts);
-      window.removeEventListener("bag-updated", updateCounts);
-    };
-  }, []);
+  // Removed local updateWishlistCount effect
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -109,28 +89,6 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
     }
   };
 
-  const removeFromBag = (id) => {
-    const updatedBag = bag.filter((item) => item.id !== id);
-    localStorage.setItem("gems_muse_bag", JSON.stringify(updatedBag));
-    updateCounts();
-    window.dispatchEvent(new Event("bag-updated"));
-  };
-
-  const bagProducts = useMemo(() => {
-    return bag
-      .map((item) => {
-        const product = MOCK_PRODUCTS.find((p) => p.id === item.id);
-        return { ...product, quantity: item.quantity };
-      })
-      .filter((p) => p.id !== undefined);
-  }, [bag]);
-
-  const subtotal = useMemo(() => {
-    return bagProducts.reduce(
-      (acc, curr) => acc + curr.price * curr.quantity,
-      0
-    );
-  }, [bagProducts]);
 
   const NavIcons = ({ isMobile = false }) => (
     <div
@@ -171,102 +129,29 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
         className="hover:text-primary transition-colors relative flex items-center"
       >
         <span className="material-icons-outlined text-xl">favorite_border</span>
-        {wishlistCount > 0 && (
+        {wishlist.length > 0 && (
           <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-primary text-white text-[8px] flex items-center justify-center rounded-full font-bold">
-            {wishlistCount}
+            {wishlist.length}
           </span>
         )}
       </button>
       <div
-        ref={!isMobile ? bagRef : null}
         className="relative flex items-center"
       >
         <button
-          onClick={() =>
-            isMobile
-              ? (navigate("/collection"), setIsMenuOpen(false))
-              : setShowBagDropdown(!showBagDropdown)
-          }
+          onClick={() => {
+            navigate("/bag");
+            if (isMobile) setIsMenuOpen(false);
+          }}
           className="hover:text-primary transition-colors relative flex items-center"
         >
           <span className="material-icons-outlined text-xl">shopping_bag</span>
-          {bag.length > 0 && (
+          {bagItems.length > 0 && (
             <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-primary text-white text-[8px] flex items-center justify-center rounded-full font-bold">
-              {bag.reduce((acc, curr) => acc + curr.quantity, 0)}
+              {bagCount}
             </span>
           )}
         </button>
-        {!isMobile && showBagDropdown && (
-          <div className="absolute top-full right-0 mt-6 w-80 md:w-96 bg-white dark:bg-surface-dark shadow-2xl border border-gray-100 dark:border-gray-800 z-[120] animate-fade-in-up origin-top-right">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6 border-b border-gray-50 dark:border-gray-800 pb-4">
-                <span className="text-[10px] uppercase tracking-[0.3em] font-bold">
-                  Your Bag ({bag.length})
-                </span>
-                <button
-                  onClick={() => setShowBagDropdown(false)}
-                  className="text-text-muted-light hover:text-primary"
-                >
-                  <span className="material-icons-outlined text-sm">close</span>
-                </button>
-              </div>
-              <div className="max-h-80 overflow-y-auto pr-2 no-scrollbar">
-                {bagProducts.length > 0 ? (
-                  <div className="space-y-6">
-                    {bagProducts.map((item) => (
-                      <div key={item.id} className="flex gap-4 group">
-                        <div className="w-16 h-16 bg-gray-50 dark:bg-black/20 flex-shrink-0 p-2">
-                          <img
-                            src={item.image}
-                            alt={item.name}
-                            className="w-full h-full object-contain"
-                          />
-                        </div>
-                        <div className="flex-grow">
-                          <div className="flex justify-between items-start">
-                            <h4 className="text-xs font-serif font-bold group-hover:text-primary transition-colors">
-                              {item.name}
-                            </h4>
-                            <button
-                              onClick={() => removeFromBag(item.id)}
-                              className="text-text-muted-light hover:text-red-500"
-                            >
-                              <span className="material-icons-outlined text-xs">
-                                delete_outline
-                              </span>
-                            </button>
-                          </div>
-                          <p className="text-[9px] text-text-muted-light uppercase tracking-widest mt-1">
-                            ${item.price.toLocaleString()} x {item.quantity}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="py-12 text-center text-text-muted-light italic text-xs">
-                    Your bag is empty.
-                  </div>
-                )}
-              </div>
-              {bagProducts.length > 0 && (
-                <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[10px] uppercase tracking-[0.2em] font-bold">
-                      Subtotal
-                    </span>
-                    <span className="text-sm font-bold">
-                      ${subtotal.toLocaleString()}
-                    </span>
-                  </div>
-                  <button className="w-full bg-primary hover:bg-primary-hover text-white py-4 text-[10px] uppercase tracking-[0.3em] font-bold transition-all shadow-xl">
-                    Checkout
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

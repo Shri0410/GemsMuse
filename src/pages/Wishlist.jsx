@@ -1,35 +1,9 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { MOCK_PRODUCTS } from "../constants";
+import { useShop } from "../context/ShopContext";
 
 const Wishlist = () => {
-  const [wishlistIds, setWishlistIds] = useState([]);
-
-  const loadWishlist = () => {
-    const saved = JSON.parse(
-      localStorage.getItem("gems_muse_wishlist") || "[]"
-    );
-    setWishlistIds(saved);
-  };
-
-  useEffect(() => {
-    loadWishlist();
-    window.addEventListener("wishlist-updated", loadWishlist);
-    return () => window.removeEventListener("wishlist-updated", loadWishlist);
-  }, []);
-
-  const wishlistProducts = useMemo(() => {
-    return MOCK_PRODUCTS.filter((p) => wishlistIds.includes(p.id));
-  }, [wishlistIds]);
-
-  const removeFromWishlist = (id, e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const updated = wishlistIds.filter((item) => item !== id);
-    localStorage.setItem("gems_muse_wishlist", JSON.stringify(updated));
-    setWishlistIds(updated);
-    window.dispatchEvent(new Event("wishlist-updated"));
-  };
+  const { wishlistItems: wishlistProducts, removeFromWishlist } = useShop();
 
   return (
     <div className="pt-40 pb-24 bg-background-light dark:bg-background-dark min-h-screen">
@@ -56,7 +30,11 @@ const Wishlist = () => {
                       src={product.image}
                     />
                     <button
-                      onClick={(e) => removeFromWishlist(product.id, e)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        removeFromWishlist(product.id);
+                      }}
                       className="absolute top-4 right-4 bg-white/90 dark:bg-black/80 p-2.5 rounded-full text-primary shadow-sm hover:bg-primary hover:text-white transition-all transform hover:rotate-12"
                       title="Remove from Wishlist"
                     >
@@ -77,9 +55,7 @@ const Wishlist = () => {
                     <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark uppercase tracking-widest mb-2">
                       {product.material}
                     </p>
-                    <p className="text-sm font-medium text-text-main-light dark:text-text-main-dark">
-                      ${product.price.toLocaleString()}
-                    </p>
+
                   </div>
                 </Link>
               </div>
