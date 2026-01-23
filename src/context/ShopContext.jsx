@@ -188,20 +188,22 @@ export const ShopProvider = ({ children }) => {
         return bag.reduce((acc, curr) => acc + curr.quantity, 0);
     }, [bag]);
 
-    const checkout = () => {
+    const getCheckoutUrl = () => {
         const phoneNumber = "85254665089";
-        if (bagItems.length === 0) return;
+        if (bagItems.length === 0) return "";
 
         let message = "Hello, I would like to inquire about the following pieces from GEMS MUSE:\n\n";
         bagItems.forEach(item => {
             message += `- ${item.name} (Qty: ${item.quantity})\n`;
         });
 
-
         message += "\nPlease confirm availability.";
+        return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    };
 
-        const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-        window.open(url, '_blank');
+    const checkout = () => {
+        const url = getCheckoutUrl();
+        if (url) window.open(url, '_blank');
     };
 
     return (
@@ -215,7 +217,9 @@ export const ShopProvider = ({ children }) => {
             bagCount,
             subtotal,
             loading,
+            loading,
             checkout,
+            getCheckoutUrl,
             wishlist,
             wishlistItems,
             addToWishlist,

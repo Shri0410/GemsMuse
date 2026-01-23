@@ -24,6 +24,11 @@ app.use('/api/customer-auth', customerAuthRoutes); // Website Customer Auth
 app.use('/api/collections', collectionRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/attributes', attributeRoutes);
+import journalRoutes from './routes/journals.js';
+import inquiryRoutes from './routes/inquiries.js';
+
+app.use('/api/journals', journalRoutes);
+app.use('/api/inquiries', inquiryRoutes);
 
 // Test route
 app.get('/', (req, res) => {

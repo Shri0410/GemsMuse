@@ -1,4 +1,8 @@
 // constants.js
+import image from "../src/assets/koi.jpg";
+import image2 from "../src/assets/colorarc.jpg";
+import image3 from "../src/assets/s-orbit.JPG";
+import image4 from "../src/assets/ruby.JPG";
 export const COLORS = {
   primary: "#C5A065",
   primaryHover: "#b08d55",
@@ -119,5 +123,145 @@ export const MOCK_BOOKINGS = [
     type: 'Bespoke Ring Consultation',
     status: 'Confirmed',
     description: 'Initial discussion for a vintage-inspired sapphire engagement ring.'
+  }
+];
+
+export const MOCK_JOURNAL_ENTRIES = [
+  {
+    id: 1,
+    title: "The Art of Layering: A Guide to Modern Elegance",
+    excerpt: "Discover the secrets to styling your favorite pieces together. From mixing metals to balancing proportions, elevate your everyday look with our comprehensive guide to layering jewelry.",
+    date: "January 15, 2026",
+    category: "Style Guide",
+    author: "Elena Rossi",
+    image: image,
+    readTime: "5 min read",
+    content: [
+      {
+        type: "paragraph",
+        text: "Jewelry has the power to transform an outfit, but mastering the art of layering can take your style to entirely new heights. It's about more than just piling on pieces; it's about telling a story through texture, length, and contrast. Whether you're a minimalist or a maximalist, there is a layering technique that speaks to your unique aesthetic."
+      },
+      {
+        type: "heading",
+        text: "Rule 1: Vary Your Lengths"
+      },
+      {
+        type: "paragraph",
+        text: "The golden rule of necklace layering is graduation. Start with a shorter piece, perhaps a delicate choker or a 14-inch chain, and build downwards. This ensures each piece gets its moment to shine without tangling or looking cluttered. A 16-inch pendant followed by a longer 20-inch chain creates a classic waterfall effect that elongates the neck."
+      },
+      {
+        type: "heading",
+        text: "Rule 2: Mix Your Metals"
+      },
+      {
+        type: "paragraph",
+        text: "Gone are the days when you had to choose between silver and gold. Modern elegance embraces the mix. Pairing the warmth of 18K Yellow Gold with the cool tones of Platinum or White Gold adds depth and visual interest. The key is to have one dominant metal and use the others as accents to bridge the gap."
+      },
+      {
+        type: "quote",
+        text: "Jewelry is like the perfect spice - it always complements what's already there."
+      },
+      {
+        type: "paragraph",
+        text: "Don't be afraid to experiment with textures as well. A hammered gold disc sits beautifully against a smooth serpentine chain. The contrast in finish catches the light differently, adding a dynamic quality to your stack."
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: "Behind the Bench: The Making of the Koi Collection",
+    excerpt: "Step into our atelier and witness the craftsmanship behind our signature collection. See how Japanese artistry inspires every fluid curve and gemstone setting.",
+    date: "December 28, 2025",
+    category: "Craftsmanship",
+    author: "Master Artisan Kenji",
+    image: image2,
+    readTime: "8 min read",
+    content: [
+      {
+        type: "paragraph",
+        text: "In the quiet hum of our atelier, creativity takes physical form. The Koi Collection was born not from a sketch, but from a feeling—the serene, hypnotic movement of koi fish gliding through water. Translating this fluidity into solid 18K Gold required a departure from traditional casting methods."
+      },
+      {
+        type: "paragraph",
+        text: "Our artisans spent months studying the anatomy of movement. We wanted the gold to feel liquid, to wrap around the finger or wrist as if it were alive. This compelled us to develop a specialized articulation technique, allowing the segments of the 'Koi Silk Pendant' to move independently."
+      },
+      {
+        type: "image",
+        url: "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?q=80&w=2070&auto=format&fit=crop",
+        caption: "Hand-carving the initial wax models."
+      },
+      {
+        type: "heading",
+        text: "The Gemstone Selection"
+      },
+      {
+        type: "paragraph",
+        text: "Selecting the rubies for the eyes of the Koi was a rigorous process. We needed stones that possessed an inner fire, a spark of life. Only 1 in 50 rubies met our criteria for clarity and color saturation. Each stone is hand-set using a microscope to ensure minimal metal interference, allowing maximum light entry."
+      },
+      {
+        type: "paragraph",
+        text: "This collection is a tribute to patience. It reminds us that true beauty cannot be rushed, and that there is strength in grace."
+      }
+    ]
+  },
+  {
+    id: 3,
+    title: "Caring for Your Gems: Maintenance 101",
+    excerpt: "Preserve the brilliance of your heirloom pieces. Expert tips on cleaning, storing, and maintaining gold, diamonds, and precious gemstones for generations to come.",
+    date: "December 10, 2025",
+    category: "Care Guide",
+    author: "Sarah Jenkins, Gemologist",
+    image: image3,
+    readTime: "4 min read",
+    content: [
+      {
+        type: "paragraph",
+        text: "Your jewelry is meant to be worn and loved, but daily exposure to elements can dull its shine. Proper care ensures your heirlooms remain as breathtaking as the day you first wore them."
+      },
+      {
+        type: "heading",
+        text: "The Gentle Clean"
+      },
+      {
+        type: "paragraph",
+        text: "For most gemstone jewelry, simplicity is best. A solution of warm water and mild dish soap is your greatest ally. Soak your pieces for 20-40 minutes and gently brush them with a soft-bristled toothbrush. This dislodges dirt from tight settings without scratching the metal."
+      },
+      {
+        type: "heading",
+        text: "Storage Matters"
+      },
+      {
+        type: "paragraph",
+        text: "Diamonds are the hardest substance on earth, which means they can scratch everything else—including other diamonds. Always store your diamond pieces individually. Soft fabric pouches or a lined jewelry box with separate compartments are essential investments for your collection's longevity."
+      }
+    ]
+  },
+  {
+    id: 4,
+    title: "Seasonal Trends: The Return of Rose Gold",
+    excerpt: "Why this romantic metal is making a major comeback. We explore the versatility of rose gold and how it complements every skin tone and style palette.",
+    date: "November 22, 2025",
+    category: "Trends",
+    author: "Fashion Editor Chloe",
+    image: image4,
+    readTime: "6 min read",
+    content: [
+      {
+        type: "paragraph",
+        text: "Rose gold has a unique ability to feel both vintage and impossibly modern. Its warmth mimics the blush of the skin, making it a universally flattering choice. This season, we saw a resurgence of this romantic alloy on the runways, paired unexpectedly with bold, primary colors."
+      },
+      {
+        type: "paragraph",
+        text: "Unlike the brassy tones of costume jewelry, 18K Rose Gold owes its pink hue to copper. The higher the copper content, the deeper the red. Our specific alloy blend aims for a soft, champagne-pink that whispers rather than shouts."
+      },
+      {
+        type: "quote",
+        text: "It's the metal of romance, of sunsets, and of soft embraces."
+      },
+      {
+        type: "paragraph",
+        text: "We love styling heavyweight rose gold chains with crisp white shirts, or stacking delicate rose gold rings with structural silver pieces for a mixed-metal look that feels fresh and current."
+      }
+    ]
   }
 ];

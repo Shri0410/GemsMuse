@@ -1,9 +1,127 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useShop } from "../context/ShopContext";
+import { useCustomerAuth } from "../context/CustomerAuthContext";
+
+const InquiryModal = ({ isOpen, onClose, onSubmit, initialData }) => {
+    const [formData, setFormData] = useState({
+        name: initialData?.full_name || '',
+        email: initialData?.email || '',
+        phone: ''
+    });
+    const [loading, setLoading] = useState(false);
+
+    if (!isOpen) return null;
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        await onSubmit(formData);
+        setLoading(false);
+    };
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <div className="bg-white dark:bg-surface-dark w-full max-w-md p-8 rounded-xl shadow-2xl animate-fade-in-up">
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-2xl font-serif text-text-main-light dark:text-text-main-dark">Inquiry Details</h3>
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+                        <span className="material-icons-outlined">close</span>
+                    </button>
+                </div>
+
+                <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-6">
+                    Please provide your contact details so we can formalize your inquiry.
+                </p>
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                        <label className="block text-xs uppercase tracking-wider font-bold text-gray-500 mb-1">Full Name</label>
+                        <input
+                            type="text"
+                            required
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 focus:border-primary outline-none transition-colors"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-xs uppercase tracking-wider font-bold text-gray-500 mb-1">Email Address</label>
+                        <input
+                            type="email"
+                            required
+                            value={formData.email}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 focus:border-primary outline-none transition-colors"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-xs uppercase tracking-wider font-bold text-gray-500 mb-1">Phone Number (Optional)</label>
+                        <input
+                            type="tel"
+                            value={formData.phone}
+                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 focus:border-primary outline-none transition-colors"
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full bg-primary hover:bg-primary-hover text-white py-4 mt-4 text-sm uppercase tracking-[0.2em] font-bold transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                    >
+                        {loading ? 'Processing...' : 'Proceed to WhatsApp'}
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+};
 
 const Bag = () => {
-    const { bagItems, removeFromBag, updateQuantity, subtotal, checkout, bagCount } = useShop();
+    const { bagItems, removeFromBag, updateQuantity, subtotal, checkout, getCheckoutUrl, bagCount } = useShop();
+    const { user } = useCustomerAuth();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleInquiryClick = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleInquirySubmit = async (contactData) => {
+        // Prepare WhatsApp URL and open window immediately to avoid popup blocker
+        const whatsappUrl = getCheckoutUrl();
+        // Open a new tab immediately (it might be blank initially)
+        const newWindow = window.open(whatsappUrl, '_blank');
+
+        // Close modal immediately
+        setIsModalOpen(false);
+
+        try {
+            // 1. Save to Database & Send Email (Async)
+            await fetch('/api/inquiries', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    customer_name: contactData.name,
+                    customer_email: contactData.email,
+                    customer_phone: contactData.phone,
+                    items: bagItems.map(item => ({
+                        id: item.id,
+                        name: item.name,
+                        sku: item.sku,
+                        quantity: item.quantity
+                    }))
+                })
+            });
+            console.log("Inquiry saved successfully");
+
+        } catch (error) {
+            console.error("Error submitting inquiry:", error);
+            // If fetch fails, the window is already opened, so the user is still redirected.
+        }
+    };
 
     return (
         <div className="pt-40 pb-24 bg-background-light dark:bg-background-dark min-h-screen">
@@ -75,7 +193,7 @@ const Bag = () => {
 
                                 <div className="flex flex-col gap-4">
                                     <button
-                                        onClick={checkout}
+                                        onClick={handleInquiryClick}
                                         className="w-full bg-primary hover:bg-primary-hover text-white py-5 text-sm uppercase tracking-[0.3em] font-bold transition-all shadow-xl hover:-translate-y-1 active:translate-y-0"
                                     >
                                         Proceed to Inquire
@@ -113,6 +231,13 @@ const Bag = () => {
                     </div>
                 )}
             </div>
+
+            <InquiryModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onSubmit={handleInquirySubmit}
+                initialData={user}
+            />
         </div>
     );
 };

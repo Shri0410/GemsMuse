@@ -361,6 +361,13 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
               >
                 Our Essence
               </Link>
+              <Link
+                to="/journal"
+                onClick={() => setIsMenuOpen(false)}
+                className="text-2xl font-serif text-text-main-light dark:text-text-main-dark hover:text-primary transition-all hover:pl-2"
+              >
+                Journal
+              </Link>
             </nav>
           </div>
         </div>

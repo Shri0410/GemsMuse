@@ -67,3 +67,28 @@ CREATE TABLE IF NOT EXISTS product_media (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
+
+-- 5. Create Journals Table
+CREATE TABLE IF NOT EXISTS journals (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    excerpt TEXT,
+    author VARCHAR(255),
+    category VARCHAR(100),
+    read_time VARCHAR(50),
+    image_url VARCHAR(255),
+    content JSON,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 6. Create Inquiries Table
+CREATE TABLE IF NOT EXISTS inquiries (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_name VARCHAR(255) NOT NULL,
+    customer_email VARCHAR(255) NOT NULL,
+    customer_phone VARCHAR(50),
+    items JSON,
+    status ENUM('new', 'contacted', 'closed') DEFAULT 'new',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

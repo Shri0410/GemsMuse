@@ -15,6 +15,8 @@ import Profile from "./pages/Profile";
 import Wishlist from "./pages/Wishlist";
 import Bag from "./pages/Bag";
 import AllProducts from "./pages/AllProducts";
+import Journal from "./pages/Journal";
+import JournalPost from "./pages/JournalPost";
 
 // Dashboard Imports
 import { AuthProvider } from "./context/AuthContext";
@@ -31,6 +33,9 @@ import DashboardHome from "./pages/dashboard/Collections"; // Reuse Collections 
 import FeaturedCollections from "./pages/dashboard/FeaturedCollections";
 import UserManagement from "./pages/dashboard/UserManagement";
 import ManageAttributes from "./pages/dashboard/ManageAttributes";
+import DashboardJournals from "./pages/dashboard/Journals";
+import JournalForm from "./pages/dashboard/JournalForm";
+import Inquiries from "./pages/dashboard/Inquiries";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -129,6 +134,10 @@ const App = () => {
                 <Route path="featured" element={<FeaturedCollections />} />
                 <Route path="users" element={<UserManagement />} />
                 <Route path="attributes" element={<ManageAttributes />} />
+                <Route path="journals" element={<DashboardJournals />} />
+                <Route path="journals/new" element={<JournalForm />} />
+                <Route path="journals/:id" element={<JournalForm />} />
+                <Route path="inquiries" element={<Inquiries />} />
               </Route>
 
               {/* Public Website Routes */}
@@ -139,6 +148,8 @@ const App = () => {
                     <Route path="/" element={<Home />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/auth" element={<Auth />} />
+                    <Route path="/journal" element={<Journal />} />
+                    <Route path="/journal/:id" element={<JournalPost />} />
 
                     {/* Restricted Access Routes (Customer Login Required) */}
                     <Route path="/collection" element={<CustomerProtectedRoute><Collection /></CustomerProtectedRoute>} />
