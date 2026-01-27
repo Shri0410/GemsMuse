@@ -5,6 +5,7 @@ import colorarc from "../assets/colorarc.jpg";
 import ruby from "../assets/ruby.jpg";
 import sorbit from "../assets/s-orbit.JPG";
 import SEO from "../components/SEO";
+import main from "../assets//Banner/main1.jpg";
 
 const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -62,18 +63,16 @@ const Home = () => {
     }
   }, [isPaused, nextSlide, totalItems, itemsToShow]);
 
-
-
   return (
     <div className="pt-0">
       <SEO />
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center bg-black overflow-hidden">
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 mt-20">
           <img
             alt="Luxury Necklace Hero"
-            className="w-full h-full object-cover opacity-80"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDukxcd8Ejhy3YefoVjo0Qbm33LM4U_ETtt5UwJXLK8hdMqnKobhYmi5S5KuzKnIdHMbvI1ghh89DJL0kc-UpZ3HLt8r-gZpIMdi8ZLL97IyuoI5dgiwCsb1UE9VB4aj74lFyWb9TzS60bMt1un_6_wtwhZumCM6ndlOK2VtrxeuYyf5seI5uBFqjuyUmo-MmFf7_NBoNLIaEFJCi91oeVvJ9qr2whukQvYM_tYY72KzyvYWVOUFFVmFt200Os0cA3zPjS-61KE0Mpu"
+            className="w-full h-full object-cover opacity-80 "
+            src={main}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60"></div>
         </div>
@@ -213,10 +212,11 @@ const Home = () => {
                 <button
                   key={i}
                   onClick={() => setCurrentIndex(i)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${currentIndex === i
-                    ? "bg-primary w-6"
-                    : "bg-gray-300 dark:bg-gray-700"
-                    }`}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    currentIndex === i
+                      ? "bg-primary w-6"
+                      : "bg-gray-300 dark:bg-gray-700"
+                  }`}
                   aria-label={`Go to slide ${i + 1}`}
                 />
               ))}

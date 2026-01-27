@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import gallery from "../assets/Banner/gallery1.jpg";
 
 const Collection = () => {
   const [collections, setCollections] = useState([]);
@@ -29,11 +30,11 @@ const Collection = () => {
     <div className="pt-20">
       {/* Editorial Header */}
       <section className="relative h-[60vh] flex items-center justify-center bg-background-dark overflow-hidden">
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 ">
           <img
             alt="The Collections"
             className="w-full h-full object-cover opacity-60"
-            src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=2070&auto=format&fit=crop"
+            src={gallery}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-background-light dark:to-background-dark"></div>
         </div>
@@ -47,7 +48,7 @@ const Collection = () => {
               Galleries
             </span>
           </h1>
-          <p className="text-gray-300 text-sm md:text-base max-w-xl mx-auto font-light tracking-widest leading-relaxed">
+          <p className="text-dark text-sm md:text-base max-w-xl mx-auto font-light tracking-widest leading-relaxed">
             Explore our curated collections, each a distinct narrative of
             artistry, heritage, and refined luxury.
           </p>

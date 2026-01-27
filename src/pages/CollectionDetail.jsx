@@ -20,7 +20,9 @@ const CollectionDetail = () => {
         }
 
         // Fetch Products for this Collection
-        const prodRes = await fetch(`/api/products?collection_id=${collectionId}`);
+        const prodRes = await fetch(
+          `/api/products?collection_id=${collectionId}`,
+        );
         if (prodRes.ok) {
           const prodData = await prodRes.json();
           setProducts(prodData);
@@ -48,13 +50,15 @@ const CollectionDetail = () => {
   if (!collection) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-background-light dark:bg-background-dark text-center px-4">
-        <h2 className="text-3xl font-serif mb-4 text-gray-800">Collection Not Found</h2>
-        <Link to="/collection" className="text-primary hover:underline">Return to Galleries</Link>
+        <h2 className="text-3xl font-serif mb-4 text-gray-800">
+          Collection Not Found
+        </h2>
+        <Link to="/collection" className="text-primary hover:underline">
+          Return to Galleries
+        </Link>
       </div>
     );
   }
-
-
 
   return (
     <div className="pt-0 bg-background-light dark:bg-background-dark min-h-screen">
@@ -64,12 +68,16 @@ const CollectionDetail = () => {
         image={collection.image_url ? `/${collection.image_url}` : undefined}
       />
       {/* Immersive Hero */}
-      <section className="relative h-[85vh] flex items-center justify-center overflow-hidden">
+      {/* <section className="relative h-[85vh] flex items-center justify-center overflow-hidden ">
         <div className="absolute inset-0 z-0">
           <img
             alt={collection.name}
             className="w-full h-full object-cover animate-fade-in transition-transform duration-[10s] hover:scale-110"
-            src={collection.image_url ? `/${collection.image_url}` : "https://images.unsplash.com/photo-1531995811006-35cb42e1a022?q=80&w=2070&auto=format&fit=crop"}
+            src={
+              collection.image_url
+                ? `/${collection.image_url}`
+                : "https://images.unsplash.com/photo-1531995811006-35cb42e1a022?q=80&w=2070&auto=format&fit=crop"
+            }
           />
           <div className="absolute inset-0 bg-black/40"></div>
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-background-light dark:to-background-dark"></div>
@@ -88,13 +96,13 @@ const CollectionDetail = () => {
           </span>
           <h1 className="text-6xl md:text-8xl lg:text-9xl text-white font-serif mb-8 leading-tight animate-fade-in-up">
             The{" "}
-            <span className="font-script text-primary text-7xl md:text-9xl lg:text-[11rem] block -mt-6 italic">
+            <span className="font-script text-primary text-[4rem] md:text-9xl lg:text-[8rem] block -mt-6 italic">
               {collection.name}
             </span>
           </h1>
           <div className="w-px h-24 bg-primary mx-auto opacity-50 animate-fade-in [animation-delay:0.5s]"></div>
         </div>
-      </section>
+      </section> */}
 
       {/* Narrative Section */}
       <section className="py-24 md:py-32 bg-white dark:bg-background-dark relative">
@@ -139,10 +147,16 @@ const CollectionDetail = () => {
                     <img
                       alt={product.name}
                       className="w-full h-full object-contain transition-all duration-1000 group-hover:scale-110 group-hover:rotate-2"
-                      src={product.main_image ? `/${product.main_image}` : product.image}
+                      src={
+                        product.main_image
+                          ? `/${product.main_image}`
+                          : product.image
+                      }
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-300">No Image</div>
+                    <div className="w-full h-full flex items-center justify-center text-gray-300">
+                      No Image
+                    </div>
                   )}
                   <div className="absolute bottom-0 inset-x-0 p-6 bg-white/90 dark:bg-surface-dark/90 backdrop-blur-md translate-y-full group-hover:translate-y-0 transition-transform duration-500 text-center border-t border-gray-100 dark:border-gray-800">
                     <span className="text-[9px] font-bold uppercase tracking-[0.4em] text-primary">
@@ -158,7 +172,6 @@ const CollectionDetail = () => {
                   <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark uppercase tracking-[0.2em] font-medium">
                     {product.material}
                   </p>
-
                 </div>
               </Link>
             ))}

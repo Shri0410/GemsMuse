@@ -4,8 +4,7 @@ import crafting from "../assets/ouressence/crafting.jpeg";
 import shashi from "../assets/ouressence/SHASHI.jpg";
 import ranju from "../assets/ouressence/Ranju.jpeg";
 import SEO from "../components/SEO";
-
-
+import about from "../assets/Banner/about.jpg";
 
 const About = () => {
   return (
@@ -20,7 +19,7 @@ const About = () => {
           <img
             alt="Luxury Jewelry Essence"
             className="w-full h-full object-cover opacity-50 scale-105"
-            src="https://images.unsplash.com/photo-1573408301185-9146fe634ad0?q=80&w=2000&auto=format&fit=crop"
+            src={about}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-background-light dark:to-background-dark"></div>
         </div>
