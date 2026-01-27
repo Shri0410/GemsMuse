@@ -105,14 +105,6 @@ const Home = () => {
             </Link>
           </div>
         </div>
-        <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 text-white flex flex-col items-center opacity-80">
-          <span className="text-[9px] uppercase tracking-[0.4em] mb-3 font-bold">
-            Scroll
-          </span>
-          <span className="material-symbols-outlined text-xl animate-bounce">
-            keyboard_double_arrow_down
-          </span>
-        </div>
       </section>
 
       {/* Our Collections Section - Carousel Implementation */}
@@ -212,11 +204,10 @@ const Home = () => {
                 <button
                   key={i}
                   onClick={() => setCurrentIndex(i)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    currentIndex === i
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${currentIndex === i
                       ? "bg-primary w-6"
                       : "bg-gray-300 dark:bg-gray-700"
-                  }`}
+                    }`}
                   aria-label={`Go to slide ${i + 1}`}
                 />
               ))}
