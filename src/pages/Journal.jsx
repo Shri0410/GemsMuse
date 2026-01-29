@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import journal from "../assets/Banner/journal.jpg";
 
 const Journal = () => {
     const [journals, setJournals] = useState([]);
@@ -39,7 +40,7 @@ const Journal = () => {
             <section className="relative h-[60vh] md:h-[70vh] w-full overflow-hidden flex items-center justify-center">
                 <div className="absolute inset-0">
                     <img
-                        src="https://images.unsplash.com/photo-1584302179602-e4c3d3fd629d?q=80&w=2068&auto=format&fit=crop"
+                        src={journal}
                         alt="The Muse Journal"
                         className="w-full h-full object-cover"
                     />

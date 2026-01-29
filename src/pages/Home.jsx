@@ -67,7 +67,7 @@ const Home = () => {
     <div className="pt-0">
       <SEO />
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center bg-black overflow-hidden">
+      <section className="relative h-screen flex items-center justify-center bg-black overflow-hidden mt-3">
         <div className="absolute inset-0 z-0 mt-20">
           <img
             alt="Luxury Necklace Hero"
@@ -205,8 +205,8 @@ const Home = () => {
                   key={i}
                   onClick={() => setCurrentIndex(i)}
                   className={`w-2 h-2 rounded-full transition-all duration-300 ${currentIndex === i
-                      ? "bg-primary w-6"
-                      : "bg-gray-300 dark:bg-gray-700"
+                    ? "bg-primary w-6"
+                    : "bg-gray-300 dark:bg-gray-700"
                     }`}
                   aria-label={`Go to slide ${i + 1}`}
                 />
