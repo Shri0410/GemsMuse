@@ -12,6 +12,12 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
+// Request Logger
+app.use((req, res, next) => {
+    console.log(`[Request] ${req.method} ${req.url}`);
+    next();
+});
+
 import authRoutes from './routes/auth.js';
 import customerAuthRoutes from './routes/customerAuth.js';
 import collectionRoutes from './routes/collections.js';
@@ -44,6 +50,12 @@ app.get('/db-check', async (req, res) => {
         console.error(error);
         res.status(500).json({ error: 'Database Connection Failed', details: error.message });
     }
+});
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+    console.error('[Global Error]', err);
+    res.status(500).json({ error: 'Internal Server Error', details: err.message });
 });
 
 const startServer = async () => {

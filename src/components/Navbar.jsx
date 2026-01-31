@@ -18,8 +18,10 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  const searchRef = useRef(null);
-  const searchInputRef = useRef(null);
+  const desktopSearchRef = useRef(null);
+  const mobileSearchRef = useRef(null);
+  const desktopSearchInputRef = useRef(null);
+  const mobileSearchInputRef = useRef(null);
   const menuRef = useRef(null);
 
   // Removed local updateWishlistCount effect
@@ -44,7 +46,10 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
+      const isOutsideDesktop = !desktopSearchRef.current || !desktopSearchRef.current.contains(event.target);
+      const isOutsideMobile = !mobileSearchRef.current || !mobileSearchRef.current.contains(event.target);
+
+      if (isOutsideDesktop && isOutsideMobile) {
         setShowSuggestions(false);
         setIsSearchOpen(false);
       }
@@ -75,14 +80,17 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
     if (searchQuery.trim()) {
       setShowSuggestions(false);
       setIsSearchOpen(false);
-      navigate(`/collection?q=${encodeURIComponent(searchQuery.trim())}`);
+      navigate(`/all-products?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
   const toggleSearch = () => {
     if (!isSearchOpen) {
       setIsSearchOpen(true);
-      setTimeout(() => searchInputRef.current?.focus(), 100);
+      setTimeout(() => {
+        desktopSearchInputRef.current?.focus();
+        mobileSearchInputRef.current?.focus();
+      }, 100);
     } else {
       setIsSearchOpen(false);
       setSearchQuery("");
@@ -158,7 +166,7 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
 
   const SearchBar = () => (
     <div
-      ref={searchRef}
+      ref={mobileSearchRef}
       className="flex items-center justify-end relative h-10"
     >
       <div
@@ -167,7 +175,7 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
       >
         <form onSubmit={handleSearchSubmit} className="w-full">
           <input
-            ref={searchInputRef}
+            ref={mobileSearchInputRef}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="bg-transparent border-none focus:ring-0 px-0 py-1 w-full text-[13px] text-text-main-light dark:text-text-main-dark placeholder-gray-400 font-light"
@@ -245,7 +253,7 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
               </button>
               <div className="flex items-center justify-start h-10">
                 <div
-                  ref={searchRef}
+                  ref={desktopSearchRef}
                   className="flex items-center relative h-10"
                 >
                   <button
@@ -268,7 +276,7 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
                   >
                     <form onSubmit={handleSearchSubmit} className="w-full">
                       <input
-                        ref={searchInputRef}
+                        ref={desktopSearchInputRef}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="bg-transparent border-none focus:ring-0 px-0 py-1 w-full text-[13px] text-text-main-light dark:text-text-main-dark placeholder-gray-400 font-light"

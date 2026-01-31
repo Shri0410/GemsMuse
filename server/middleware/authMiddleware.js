@@ -4,13 +4,26 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+    const authHeader = req.headers.authorization;
+    const token = authHeader?.startsWith('Bearer ')
+        ? authHeader.split(' ')[1]
+        : null;
 
-    if (!token) return res.sendStatus(401);
+    if (!token) {
+        return res.status(401).json({ message: 'Access token missing' });
+    }
 
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
+        if (err) {
+            console.error('[AuthMiddleware] JWT Verification Failed:', err.message);
+
+            return res.status(401).json({
+                message: err.name === 'TokenExpiredError'
+                    ? 'Token expired'
+                    : 'Invalid token',
+            });
+        }
+
         req.user = user;
         next();
     });

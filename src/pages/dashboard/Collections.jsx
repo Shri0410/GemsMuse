@@ -7,7 +7,7 @@ const Collections = () => {
     const [subtitle, setSubtitle] = useState('');
     const [description, setDescription] = useState('');
     const [file, setFile] = useState(null);
-    const { token } = useAuth();
+    const { token, logout } = useAuth();
     const [loading, setLoading] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [isFormVisible, setIsFormVisible] = useState(false); // Collapsible Form
@@ -85,11 +85,27 @@ const Collections = () => {
                 handleCancelEdit();
                 fetchCollections();
             } else {
-                alert('Failed to save collection. Check console.');
-                console.error(await res.json());
+                if (res.status === 401 || res.status === 403) {
+                    alert('Session expired. Logging you out...');
+                    logout();
+                    return;
+                } else {
+                    const errorText = await res.text();
+                    try {
+                        const errorJson = JSON.parse(errorText);
+                        console.error(errorJson);
+                        alert(errorJson.message || 'Failed to save collection.');
+                    } catch (e) {
+                        console.error('Server Response:', errorText);
+                        alert('Server error: ' + (errorText || res.statusText));
+                    }
+                }
             }
         } catch (error) {
             console.error('Error saving collection:', error);
+            if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
+                alert('Network Error: Cannot reach backend server. Please ensure it is running on port 5000.');
+            }
         } finally {
             setLoading(false);
         }

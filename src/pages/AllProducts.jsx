@@ -54,7 +54,19 @@ const AllProducts = () => {
 
     // Filter Logic
     const filteredProducts = useMemo(() => {
+        const searchQuery = searchParams.get("q")?.toLowerCase() || "";
+
         return products.filter((product) => {
+            const matchSearch = !searchQuery ||
+                product.name?.toLowerCase().includes(searchQuery) ||
+                product.collection_name?.toLowerCase().includes(searchQuery) ||
+                product.product_type?.toLowerCase().includes(searchQuery) ||
+                product.metal_type?.toLowerCase().includes(searchQuery) ||
+                product.metal_color?.toLowerCase().includes(searchQuery) ||
+                product.gem_stones?.toLowerCase().includes(searchQuery) ||
+                product.description?.toLowerCase().includes(searchQuery) ||
+                product.sku?.toLowerCase().includes(searchQuery);
+
             const matchCollection =
                 selectedCollections.length === 0 ||
                 selectedCollections.includes(product.collection_name);
@@ -65,9 +77,9 @@ const AllProducts = () => {
             const matchColor =
                 selectedColors.length === 0 || selectedColors.includes(product.metal_color);
 
-            return matchCollection && matchType && matchMetal && matchColor;
+            return matchSearch && matchCollection && matchType && matchMetal && matchColor;
         });
-    }, [products, selectedCollections, selectedTypes, selectedMetals, selectedColors]);
+    }, [products, selectedCollections, selectedTypes, selectedMetals, selectedColors, searchParams]);
 
     const toggleFilter = (setter, value) => {
         setter((prev) =>
