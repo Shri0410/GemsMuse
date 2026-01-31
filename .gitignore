@@ -12,6 +12,22 @@ dist
 dist-ssr
 *.local
 
+# Environment variables (NEVER COMMIT PRODUCTION SECRETS)
+.env
+.env.local
+.env.development
+.env.production
+.env*.local
+
+# Server uploads and data
+server/uploads/*
+!server/uploads/.gitkeep
+server/node_modules/
+
+# Database backups
+*.sql
+*.dump
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -22,3 +38,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Testing
+/coverage
+.nyc_output/
+
+# Build cache
+.cache/
+.turbo/
