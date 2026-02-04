@@ -144,7 +144,16 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row items-center gap-2">
             <p>© 2026 Gems Muse. All rights reserved.</p>
             <p className="hidden md:block text-light">|</p>
-            <p>Design & Developed by Syntiaro</p>
+            <p>
+              <a
+                href="https://www.syntiaro.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+              >
+                Design & Developed by Syntiaro
+              </a>
+            </p>
           </div>
           <div className="flex gap-6 mt-4 md:mt-0">
             <a className="hover:text-white transition-colors" href="#">
