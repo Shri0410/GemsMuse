@@ -141,7 +141,11 @@ const Footer = () => {
           </div>
         </div>
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs font-light">
-          <p>© 2026 Gems Muse. All rights reserved.</p>
+          <div className="flex flex-col md:flex-row items-center gap-2">
+            <p>© 2026 Gems Muse. All rights reserved.</p>
+            <p className="hidden md:block text-light">|</p>
+            <p>Design & Developed by Syntiaro</p>
+          </div>
           <div className="flex gap-6 mt-4 md:mt-0">
             <a className="hover:text-white transition-colors" href="#">
               Privacy Policy
