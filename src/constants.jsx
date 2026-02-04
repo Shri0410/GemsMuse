@@ -1,7 +1,7 @@
 // constants.js
 import image from "../src/assets/koi.jpg";
 import image2 from "../src/assets/colorarc.jpg";
-import image3 from "../src/assets/s-orbit.jpg";
+import image3 from "../src/assets/s-orbit.JPG";
 import image4 from "../src/assets/ruby.jpg";
 export const COLORS = {
   primary: "#C5A065",
