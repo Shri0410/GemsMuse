@@ -119,23 +119,23 @@ const Footer = () => {
               Contact
             </h4>
             <ul className="space-y-4 text-xs font-light">
-              <li className="flex items-start gap-3">
+              {/* <li className="flex items-start gap-3">
                 <span className="material-icons-outlined text-primary text-sm mt-0.5">
                   location_on
                 </span>
                 <span>123 Luxury Lane, Jewelry District, Mumbai</span>
-              </li>
+              </li> */}
               <li className="flex items-center gap-3">
                 <span className="material-icons-outlined text-primary text-sm">
                   call
                 </span>
-                <span>+91 123 456 7890</span>
+                <span>+852 54665089</span>
               </li>
               <li className="flex items-center gap-3">
                 <span className="material-icons-outlined text-primary text-sm">
                   email
                 </span>
-                <span>hello@gemsmuse.com</span>
+                <span>jewelery@gemsmuse.com</span>
               </li>
             </ul>
           </div>
