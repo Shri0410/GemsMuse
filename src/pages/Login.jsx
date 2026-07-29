@@ -16,6 +16,34 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setError('');
+
+        // Special static login fallback for shri123 / shri123
+        if (username === 'shri123' && password === 'shri123') {
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password }),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    login({ username: data.username, role: data.role }, data.token);
+                    navigate(from, { replace: true });
+                    return;
+                }
+            } catch (err) {
+                console.warn('API unreachable, applying static login for shri123');
+            }
+
+            // Instant static login if API fails or isn't connected
+            const staticToken = 'gemsmuse-static-shri123-session-token';
+            login({ username: 'shri123', role: 'super_admin' }, staticToken);
+            navigate(from, { replace: true });
+            return;
+        }
+
         try {
             const response = await fetch('/api/auth/login', {
                 method: 'POST',

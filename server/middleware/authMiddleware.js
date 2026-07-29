@@ -13,7 +13,8 @@ const authenticateToken = (req, res, next) => {
         return res.status(401).json({ message: 'Access token missing' });
     }
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    const JWT_SECRET = process.env.JWT_SECRET || 'gemsmuse_secret_key_2026';
+    jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
             console.error('[AuthMiddleware] JWT Verification Failed:', err.message);
 

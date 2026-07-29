@@ -4,7 +4,7 @@ import crafting from "../assets/ouressence/crafting.jpeg";
 import shashi from "../assets/ouressence/SHASHI.jpg";
 import ranju from "../assets/ouressence/Ranju.jpeg";
 import SEO from "../components/SEO";
-import about from "../assets/Banner/about.jpg";
+import about from "../assets/Banner/our.jpg";
 
 const About = () => {
   return (

@@ -6,33 +6,34 @@ import authenticateToken from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// Login with Database Auth
+// Login with Static & Database Auth
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
+    const JWT_SECRET = process.env.JWT_SECRET || 'gemsmuse_secret_key_2026';
+
+    // 1. Static Credentials Check (shri123 / shri123 or admin / admin123)
+    if (
+        (username === 'shri123' && password === 'shri123') ||
+        (username === 'admin' && password === 'admin123')
+    ) {
+        const token = jwt.sign(
+            { id: 1, username: username, role: 'super_admin' },
+            JWT_SECRET,
+            { expiresIn: '24h' }
+        );
+        return res.json({ token, username, role: 'super_admin' });
+    }
 
     try {
-        // 1. Check if user exists
+        // 2. Check if user exists in database
         let [rows] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
         let user = rows[0];
 
-        // 2. Migration: If 'admin' user doesn't exist, create it with default password
-        if (!user && username === 'admin' && password === 'admin123') {
-            const hashedPassword = await bcrypt.hash('admin123', 10);
-            const [result] = await pool.query(
-                'INSERT INTO users (username, password_hash, email, role) VALUES (?, ?, ?, ?)',
-                ['admin', hashedPassword, 'admin@example.com', 'super_admin']
-            );
-            // Fetch the newly created user
-            [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [result.insertId]);
-            user = rows[0];
-            console.log('Migrated default admin user to database.');
-        }
-
-        // 3. Verify credentials
+        // 3. Verify credentials against DB
         if (user && await bcrypt.compare(password, user.password_hash)) {
             const token = jwt.sign(
                 { id: user.id, username: user.username, role: user.role },
-                process.env.JWT_SECRET,
+                JWT_SECRET,
                 { expiresIn: '24h' }
             );
             return res.json({ token, username: user.username, role: user.role });
@@ -40,8 +41,8 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
     } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        console.error('Login database error:', error);
+        return res.status(500).json({ error: 'Internal server error' });
     }
 });
 

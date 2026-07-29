@@ -166,4 +166,15 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     }
 });
 
+// Delete Product Media
+router.delete('/:id/media/:mediaId', authenticateToken, async (req, res) => {
+    const { id, mediaId } = req.params;
+    try {
+        await pool.query('DELETE FROM product_media WHERE id = ? AND product_id = ?', [mediaId, id]);
+        res.json({ message: 'Product media deleted' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 export default router;
